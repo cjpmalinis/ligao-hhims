@@ -1,3 +1,31 @@
+let deferredInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  const b=document.getElementById("installAppBtn");
+  if(b)b.classList.remove("hidden");
+  const h=document.getElementById("pwaHelp");
+  if(h)h.classList.remove("hidden");
+});
+window.addEventListener("appinstalled",()=>{
+  deferredInstallPrompt=null;
+  const b=document.getElementById("installAppBtn");
+  if(b)b.classList.add("hidden");
+});
+window.addEventListener("DOMContentLoaded",()=>{
+  const b=document.getElementById("installAppBtn");
+  if(b)b.addEventListener("click",async()=>{
+    if(deferredInstallPrompt){
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt=null;
+      b.classList.add("hidden");
+    } else {
+      alert('Open the browser menu and choose "Install app" or "Add to Home screen".');
+    }
+  });
+});
+
 
 const cfg=window.HHIMS_CONFIG||{};
 const configured=cfg.SUPABASE_URL&&!cfg.SUPABASE_URL.includes("YOUR_PROJECT")&&cfg.SUPABASE_PUBLISHABLE_KEY&&!cfg.SUPABASE_PUBLISHABLE_KEY.includes("YOUR_PUBLISHABLE");

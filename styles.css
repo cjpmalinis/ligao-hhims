@@ -11,3 +11,12 @@ dialog{width:min(1050px,95vw);border:none;border-radius:16px;padding:0;box-shado
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}@media(max-width:600px){.stats-grid,.form-grid,.checks-grid,.filters{grid-template-columns:1fr}}
 
 .small-btn{border:1px solid #cbd5e1;background:#fff;border-radius:7px;padding:5px 8px;cursor:pointer}.small-btn.delete{color:var(--danger)}.file-label{display:inline-flex;align-items:center}
+
+#installAppBtn{white-space:nowrap}
+@media(max-width:600px){
+  .topbar{align-items:flex-start}
+  .session-box,.actions{width:100%}
+  .actions .btn,.actions .file-label{flex:1;text-align:center;justify-content:center}
+  .container{width:96%;margin-top:14px}
+  dialog{width:97vw}
+}
