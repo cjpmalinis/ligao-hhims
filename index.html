@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ligao City Centralized HHIMS</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1>Centralized Household Information Management System</h1>
+    <p>City Social Welfare and Development Office • Ligao City</p>
+  </div>
+  <div id="sessionBox" class="session-box hidden">
+    <div><strong id="userName"></strong><span id="userRole"></span></div>
+    <button id="logoutBtn" class="btn secondary">Sign Out</button>
+  </div>
+</header>
+
+<main class="container">
+  <section id="configWarning" class="notice warning">
+    Configure <strong>config.js</strong> with your Supabase Project URL and Publishable Key before using the online system.
+  </section>
+
+  <section id="loginView" class="login-card">
+    <h2>Secure Login</h2>
+    <p>Authorized CSWDO users only.</p>
+    <form id="loginForm">
+      <label>Email<input id="email" type="email" autocomplete="username" required></label>
+      <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary full" type="submit">Sign In</button>
+      <p id="loginMessage" class="message"></p>
+    </form>
+  </section>
+
+  <section id="appView" class="hidden">
+    <section class="stats-grid">
+      <div class="stat-card"><span>Total Households</span><strong id="statHouseholds">0</strong></div>
+      <div class="stat-card"><span>Total Persons</span><strong id="statPersons">0</strong></div>
+      <div class="stat-card"><span>Barangays Visible</span><strong id="statBarangays">0</strong></div>
+      <div class="stat-card"><span>Senior Citizens</span><strong id="statSeniors">0</strong></div>
+      <div class="stat-card"><span>PWD</span><strong id="statPwd">0</strong></div>
+      <div class="stat-card"><span>4Ps</span><strong id="stat4ps">0</strong></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div><h2>Household Registry</h2><p id="scopeNote"></p></div>
+        <div class="actions">
+      <button id="exportExcelBtn" class="btn ghost">Export Excel</button>
+      <label class="btn ghost file-label">Import Excel<input id="importExcelFile" type="file" accept=".xlsx,.xls" hidden></label>
+      <button id="addHouseholdBtn" class="btn primary">+ Add Household</button>
+    </div>
+      </div>
+
+      <div class="filters">
+        <input id="searchInput" type="search" placeholder="Search Household ID or name...">
+        <select id="barangayFilter"><option value="">All Accessible Barangays</option></select>
+        <select id="headFilter">
+          <option value="">All Households</option>
+          <option value="senior">Senior Citizen Household Heads</option>
+          <option value="pwd">PWD Household Heads</option>
+          <option value="4ps">4Ps Household Heads</option>
+        </select>
+        <button id="refreshBtn" class="btn ghost">Refresh</button>
+      </div>
+
+      <div id="householdList" class="household-list"></div>
+    </section>
+
+    <section id="adminPanel" class="panel admin-panel hidden">
+      <div class="panel-header">
+        <div><h2>User & Access Overview</h2><p>Admin-only view of user accounts and access status.</p></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Barangay Access</th><th>Status</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+      <div class="admin-note">User creation is intentionally handled in the Supabase Auth dashboard in this starter version so the browser never receives a service-role secret.</div>
+    </section>
+  </section>
+</main>
+
+<dialog id="householdDialog">
+<form id="householdForm">
+  <input type="hidden" id="householdEditId">
+  <div class="dialog-header"><div><h2>Add Household</h2><p>One household has one Household Head.</p></div><button type="button" class="icon-btn" id="closeHousehold">✕</button></div>
+  <div class="form-grid">
+    <label>Barangay<select id="hhBarangay" required></select></label>
+    <label>Purok<input id="hhPurok"></label>
+    <label>No. of Families<input id="hhFamilies" type="number" min="1" value="1"></label>
+    <label>House Ownership<input id="hhOwnership"></label>
+    <label>Length of Residence<input id="hhResidence"></label>
+    <label>Interviewee<input id="hhInterviewee"></label>
+  </div>
+  <h3>Household Head</h3>
+  <div class="form-grid">
+    <label>Last Name<input id="headLast" required></label>
+    <label>First Name<input id="headFirst" required></label>
+    <label>Middle Name<input id="headMiddle"></label>
+    <label>Ext. Name<input id="headExt"></label>
+    <label>Birthdate<input id="headBirthdate" type="date"></label>
+    <label>Sex<select id="headSex"><option></option><option>M</option><option>F</option></select></label>
+    <label>Civil Status<input id="headCivil"></label>
+    <label>Education<input id="headEducation"></label>
+    <label>Occupation<input id="headOccupation"></label>
+    <label>Employment Address<input id="headEmployment"></label>
+  </div>
+  <div class="checks-grid">
+    <label><input id="headSenior" type="checkbox"> Senior Citizen</label>
+    <label><input id="headPwd" type="checkbox"> PWD</label>
+    <label><input id="headPregnant" type="checkbox"> Pregnant</label>
+    <label><input id="headLactating" type="checkbox"> Lactating</label>
+    <label><input id="headMedical" type="checkbox"> Medical Condition</label>
+    <label><input id="headFourPs" type="checkbox"> 4Ps</label>
+  </div>
+  <div class="dialog-actions"><button type="button" class="btn ghost" id="cancelHousehold">Cancel</button><button type="submit" class="btn primary">Save Household</button></div>
+</form>
+</dialog>
+
+<dialog id="memberDialog">
+<form id="memberForm">
+  <div class="dialog-header"><div><h2>Add Household Member</h2><p id="memberContext"></p></div><button type="button" class="icon-btn" id="closeMember">✕</button></div>
+  <input type="hidden" id="memberHouseholdId">
+  <input type="hidden" id="memberEditId">
+  <div class="form-grid">
+    <label>Family Number<input id="memberFamilyNo" type="number" min="1" value="1"></label>
+    <label>Relationship to Household Head<input id="memberRelation" required></label>
+    <label>Last Name<input id="memberLast" required></label>
+    <label>First Name<input id="memberFirst" required></label>
+    <label>Middle Name<input id="memberMiddle"></label>
+    <label>Ext. Name<input id="memberExt"></label>
+    <label>Birthdate<input id="memberBirthdate" type="date"></label>
+    <label>Sex<select id="memberSex"><option></option><option>M</option><option>F</option></select></label>
+    <label>Civil Status<input id="memberCivil"></label>
+    <label>Education<input id="memberEducation"></label>
+    <label>Occupation<input id="memberOccupation"></label>
+    <label>Employment Address<input id="memberEmployment"></label>
+  </div>
+  <div class="checks-grid">
+    <label><input id="memberSenior" type="checkbox"> Senior Citizen</label>
+    <label><input id="memberPwd" type="checkbox"> PWD</label>
+    <label><input id="memberPregnant" type="checkbox"> Pregnant</label>
+    <label><input id="memberLactating" type="checkbox"> Lactating</label>
+    <label><input id="memberMedical" type="checkbox"> Medical Condition</label>
+    <label><input id="memberFourPs" type="checkbox"> 4Ps</label>
+  </div>
+  <div class="dialog-actions"><button type="button" class="btn ghost" id="cancelMember">Cancel</button><button type="submit" class="btn primary">Save Member</button></div>
+</form>
+</dialog>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
