@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Ligao Community College | NSTP Student Portal 2026–2027</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -85,6 +87,8 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 .material-actions{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
 .upload-zone{border:2px dashed #d1d5db;border-radius:16px;padding:24px;text-align:center;background:#fafbff}
 .file-name{font-size:11px;color:#6b7280;margin-top:8px}
+
+.att-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:18px;margin-top:18px}.qr-card{background:#fff;border-radius:22px;padding:24px;text-align:center;box-shadow:0 12px 30px #28345c0a}.qr-box{width:250px;height:250px;margin:15px auto;display:grid;place-items:center;background:#fff;border:10px solid #fff;border-radius:18px;box-shadow:0 8px 25px #1112}.qr-id{font:800 14px Poppins;color:#172033}.scanner-card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 12px 30px #28345c0a}.scanner{width:100%;max-width:620px;margin:auto;border-radius:16px;overflow:hidden;background:#111827;min-height:280px}.session-badge{display:inline-flex;padding:7px 10px;border-radius:99px;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:800}.attendance-table{overflow:auto;margin-top:18px}.qr-print{margin-top:10px}.schedule-card{padding:15px;border:1px solid #e8eaf2;border-radius:14px;background:#fafbff}.schedule-card b{display:block;margin-bottom:4px}.scan-result{font-size:18px;font-weight:800;margin-top:12px}.scan-sub{font-size:12px;color:#6b7280;margin-top:4px}@media(max-width:900px){.att-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -242,6 +246,21 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
           <div id="studentMaterials" class="material-grid"></div>
         </div>
 
+<div id="sAttendance" class="page">
+          <div class="welcome"><small>Personal Attendance QR</small><h1>My Attendance QR</h1><p>Show this QR code to your NSTP instructor when attendance is being checked.</p></div>
+          <div class="qr-card" style="max-width:520px;margin-top:20px">
+            <div id="studentQR" class="qr-box"></div>
+            <div id="studentQRName" class="qr-id">Loading...</div>
+            <div id="studentQRNo" class="muted"></div>
+            <div class="eval-note" style="margin-top:10px">Your QR code is unique to your student account. Do not share your account or QR with another student.</div>
+            <button class="btn secondary qr-print" style="width:auto" onclick="window.print()">PRINT QR</button>
+          </div>
+        </div>
+        <div id="sAttendanceHistory" class="page">
+          <div class="welcome"><small>Attendance Records</small><h1>My Attendance</h1><p>Attendance records are based on successful QR scans by the instructor.</p></div>
+          <div id="myAttendanceTable" class="admin-table-wrap" style="margin-top:20px"></div>
+        </div>
+
 <div id="sEvaluation" class="page">
           <div class="welcome"><small>Confidential Instructor Evaluation</small><h1>Evaluate Your Instructor</h1><p>Your feedback helps improve NSTP teaching and learning.</p></div>
           <div id="evaluationArea" class="eval-grid"></div>
@@ -296,7 +315,28 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
         </div>
 
         
-        <div id="aMaterials" class="page">
+        <div id="aAttendance" class="page">
+          <div class="welcome"><small>Class Attendance</small><h1>QR Attendance Scanner</h1><p>Start attendance when you arrive. Every successful scan is recorded as <strong>PRESENT</strong>. The time is recorded for reference only.</p></div>
+          <div class="att-grid">
+            <div class="card">
+              <div class="section-title">Today’s Class</div>
+              <div class="schedule-card"><b id="attendanceBlock">Loading...</b><span id="attendanceDay" class="muted"></span><div id="attendanceSessionStatus" style="margin-top:10px"></div></div>
+              <div class="field" style="margin-top:15px"><label>CLASS BLOCK</label><select id="attendanceBlockSelect" class="select"><option>BSED 1 Social Studies A</option><option>BECED 1-A</option><option>BSED 1 Math</option></select></div>
+              <div class="savebar" style="justify-content:flex-start"><button id="startAttendanceBtn" class="btn primary" style="width:auto" onclick="startAttendance()">START ATTENDANCE</button><button id="endAttendanceBtn" class="btn danger" style="width:auto;display:none" onclick="endAttendance()">END ATTENDANCE</button></div>
+              <div id="attendanceMsg" class="msg"></div>
+              <div style="margin-top:18px"><span class="session-badge">No time cutoff</span><div class="eval-note" style="margin-top:8px">You decide when attendance starts and ends. A successful scan marks the student Present regardless of scan time.</div></div>
+            </div>
+            <div class="scanner-card">
+              <div class="section-title">Scan Student QR</div>
+              <div id="qrReader" class="scanner"></div>
+              <div id="scanResult" class="scan-result">Scanner is ready when an attendance session is active.</div>
+              <div id="scanSub" class="scan-sub"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px"><div class="section-title">Current Session Attendance</div><div id="attendanceSessionTable" class="attendance-table"></div></div>
+        </div>
+
+<div id="aMaterials" class="page">
           <div class="welcome"><small>Instructor Resources</small><h1>Learning Materials</h1><p>Upload, organize, and publish NSTP learning resources for your students.</p></div>
           <div class="card" style="margin-bottom:18px">
             <div class="section-title">Upload New Material</div>
@@ -340,7 +380,7 @@ const SUPABASE_KEY="sb_publishable_aXpIvVDCADsWrNdj5qPTuA_8Na8uqLd";
 const FUNCTION_URL=SUPABASE_URL+"/functions/v1/student-auth";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let currentUser=null,currentProfile=null,isAdmin=false,roster=[],adminGrades=[],currentEvaluationSemester="First Semester";
+let currentUser=null,currentProfile=null,isAdmin=false,roster=[],adminGrades=[],currentEvaluationSemester="First Semester",attendanceScanner=null,activeAttendanceSession=null;
 
 function $(id){return document.getElementById(id)}
 function norm(v){return String(v||"").trim().toUpperCase().replace(/\s+/g,"")}
@@ -365,6 +405,8 @@ function studentSidebar(){
   <button class="navbtn" data-page="sPersonal" onclick="nav('sPersonal')">👤 Personal Information</button>
   <button class="navbtn" data-page="sGrades" onclick="nav('sGrades');loadStudentGrades()">📚 Grades</button>
   <button class="navbtn" data-page="sMaterials" onclick="nav('sMaterials');loadStudentMaterials()">📖 Learning Materials</button>
+  <button class="navbtn" data-page="sAttendance" onclick="nav('sAttendance');loadStudentQR()">📱 My Attendance QR</button>
+  <button class="navbtn" data-page="sAttendanceHistory" onclick="nav('sAttendanceHistory');loadMyAttendance()">📊 My Attendance</button>
   <button class="navbtn" data-page="sEvaluation" onclick="nav('sEvaluation');loadEvaluation()">📝 Instructor Evaluation</button>
   <button class="navbtn" data-page="sSecurity" onclick="nav('sSecurity')">🔐 Security</button>`;
 }
@@ -374,6 +416,7 @@ function adminSidebar(){
   <button class="navbtn" data-page="aStudents" onclick="nav('aStudents')">👥 Students</button>
   <button class="navbtn" data-page="aGrades" onclick="nav('aGrades')">📝 Grade Management</button>
   <button class="navbtn" data-page="aMaterials" onclick="nav('aMaterials');loadAdminMaterials()">📚 Learning Materials</button>
+  <button class="navbtn" data-page="aAttendance" onclick="nav('aAttendance');loadAttendancePage()">📱 Attendance Scanner</button>
   <button class="navbtn" data-page="aEvaluations" onclick="nav('aEvaluations');loadEvaluationResults()">📋 Evaluation Results</button>`;
 }
 async function fn(action,payload={}){
@@ -624,6 +667,27 @@ async function deleteMaterial(id,path){
 }
 document.addEventListener("change",e=>{if(e.target.id==="matFile"&&e.target.files[0])$("matFileName").textContent=e.target.files[0].name});
 
+const CLASS_SCHEDULE={1:"BSED 1 Social Studies A",2:"BECED 1-A",4:"BSED 1 Math"};
+function todayClass(){return CLASS_SCHEDULE[new Date().getDay()]||"No scheduled NSTP class";}
+async function loadStudentQR(){
+  let box=$("studentQR");if(!box)return;showLoader(true);
+  try{let {data,error}=await sb.rpc("get_or_create_my_attendance_qr");if(error)throw error;box.innerHTML="";new QRCode(box,{text:data.token,width:230,height:230,colorDark:"#111827",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});$("studentQRName").textContent=currentProfile.full_name;$("studentQRNo").textContent=currentProfile.student_number+" • "+currentProfile.section;}
+  catch(e){console.error(e);box.innerHTML='<div class="eval-note">QR could not be generated. Please run the Attendance SQL setup.</div>'}finally{showLoader(false)}
+}
+async function loadMyAttendance(){
+  let box=$("myAttendanceTable");if(!box)return;
+  try{let {data,error}=await sb.from("attendance_records").select("attendance_date,scanned_at,status,attendance_sessions!inner(block)").eq("student_id",currentUser.id).order("attendance_date",{ascending:false}).order("scanned_at",{ascending:false});if(error)throw error;if(!data?.length){box.innerHTML='<div class="empty">No attendance records yet.</div>';return}box.innerHTML='<table class="table"><thead><tr><th>Date</th><th>Class</th><th>Scan Time</th><th>Status</th></tr></thead><tbody>'+data.map(x=>`<tr><td>${esc(x.attendance_date)}</td><td>${esc(x.attendance_sessions?.block||" ")}</td><td>${new Date(x.scanned_at).toLocaleString()}</td><td><span class="status">${esc(x.status)}</span></td></tr>`).join('')+'</tbody></table>';}catch(e){box.innerHTML='<div class="empty">Attendance records could not be loaded.</div>'}
+}
+async function loadAttendancePage(){let block=todayClass();$("attendanceDay").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});$("attendanceBlock").textContent=block;if(block!=="No scheduled NSTP class")$("attendanceBlockSelect").value=block;await findActiveAttendanceSession();}
+async function findActiveAttendanceSession(){try{let date=new Date().toISOString().slice(0,10);let {data,error}=await sb.from("attendance_sessions").select("*").eq("attendance_date",date).eq("active",true).maybeSingle();if(error&&error.code!=="PGRST116")throw error;activeAttendanceSession=data||null;updateAttendanceUI();if(data){await loadSessionAttendance();startScanner();}}catch(e){console.error(e)}}
+function updateAttendanceUI(){let active=!!activeAttendanceSession;$("startAttendanceBtn").style.display=active?"none":"inline-block";$("endAttendanceBtn").style.display=active?"inline-block":"none";$("attendanceSessionStatus").innerHTML=active?'<span class="session-badge">🟢 ATTENDANCE ACTIVE</span>':'<span class="session-badge">⚪ SESSION NOT STARTED</span>';}
+async function startAttendance(){let block=$("attendanceBlockSelect").value;if(!block)return;showLoader(true);try{let {data,error}=await sb.from("attendance_sessions").insert({attendance_date:new Date().toISOString().slice(0,10),block,active:true,started_at:new Date().toISOString(),started_by:currentUser.id}).select().single();if(error)throw error;activeAttendanceSession=data;updateAttendanceUI();await loadSessionAttendance();startScanner();setMsg("attendanceMsg","Attendance session started. Scan students as they arrive.","ok");}catch(e){setMsg("attendanceMsg",e.message||"Could not start attendance.")}finally{showLoader(false)}}
+async function endAttendance(){if(!activeAttendanceSession)return;if(!confirm("End attendance for this class session? No more QR scans will be accepted."))return;showLoader(true);try{let {error}=await sb.from("attendance_sessions").update({active:false,ended_at:new Date().toISOString()}).eq("id",activeAttendanceSession.id);if(error)throw error;stopScanner();activeAttendanceSession=null;updateAttendanceUI();setMsg("attendanceMsg","Attendance session ended.","ok");}catch(e){setMsg("attendanceMsg",e.message||"Could not end attendance.")}finally{showLoader(false)}}
+function startScanner(){if(attendanceScanner||!activeAttendanceSession)return;attendanceScanner=new Html5Qrcode("qrReader");attendanceScanner.start({facingMode:"environment"},{fps:10,qrbox:{width:240,height:240}},onQrScan,()=>{}).catch(e=>{attendanceScanner=null;setMsg("attendanceMsg","Camera could not start. Allow camera access and use HTTPS (GitHub Pages).")})}
+function stopScanner(){if(attendanceScanner){attendanceScanner.stop().then(()=>{attendanceScanner.clear();attendanceScanner=null}).catch(()=>{attendanceScanner=null})}}
+let lastScanToken="",lastScanAt=0;
+async function onQrScan(decodedText){let now=Date.now();if(decodedText===lastScanToken&&now-lastScanAt<3000)return;lastScanToken=decodedText;lastScanAt=now;try{let {data:qr,error}=await sb.from("student_qr_codes").select("student_id,student_number,full_name,block").eq("token",decodedText).maybeSingle();if(error)throw error;if(!qr){$("scanResult").textContent="❌ QR code not recognized";return}let {error:ins}=await sb.from("attendance_records").insert({session_id:activeAttendanceSession.id,student_id:qr.student_id,attendance_date:new Date().toISOString().slice(0,10),status:"Present",scanned_at:new Date().toISOString(),scanned_by:currentUser.id});if(ins){if(ins.code==="23505"){$("scanResult").textContent="⚠️ Already Recorded";$("scanSub").textContent=qr.full_name;}else throw ins}else{$("scanResult").textContent="✅ PRESENT";$("scanSub").textContent=qr.full_name+" • "+qr.student_number;await loadSessionAttendance()}}catch(e){console.error(e);$("scanResult").textContent="❌ Scan could not be recorded"}}
+async function loadSessionAttendance(){let box=$("attendanceSessionTable");if(!box||!activeAttendanceSession)return;try{let {data,error}=await sb.from("attendance_records").select("student_number,full_name,block,scanned_at,status").eq("session_id",activeAttendanceSession.id).order("scanned_at");if(error)throw error;box.innerHTML=data?.length?'<table class="table"><thead><tr><th>#</th><th>Student No.</th><th>Name</th><th>Block</th><th>Time Scanned</th><th>Status</th></tr></thead><tbody>'+data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.student_number)}</td><td>${esc(x.full_name)}</td><td>${esc(x.block)}</td><td>${new Date(x.scanned_at).toLocaleTimeString()}</td><td><span class="status">${esc(x.status)}</span></td></tr>`).join('')+'</tbody></table>':'<div class="empty">No students scanned yet.</div>'}catch(e){console.error(e)}}
 const EVALUATION_SECTIONS = [
   {
     title:"A. Teaching and Lesson Delivery",
