@@ -97,6 +97,10 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 /* Responsive mobile navigation */
 .mobile-menu-btn{position:fixed;right:14px;top:12px;z-index:10001;display:none;border:1px solid var(--line);background:#fff;border-radius:12px;width:44px;height:44px;font-size:22px;cursor:pointer;box-shadow:0 6px 18px #1112}
 .mobile-overlay{display:none;position:fixed;inset:0;background:#11182766;z-index:9998}
+.mobile-drawer{display:none!important;position:fixed!important;top:0!important;left:0!important;bottom:0!important;width:min(320px,88vw)!important;background:#fff!important;z-index:9999!important;box-shadow:16px 0 40px #1113!important;overflow-y:auto!important;padding:18px 14px!important}
+.mobile-drawer.open{display:block!important}
+.mobile-nav{display:flex!important;flex-direction:column!important;gap:4px!important}
+.mobile-nav button{display:block!important;width:100%!important;border:0!important;background:transparent!important;text-align:left!important;padding:14px 12px!important;border-radius:12px!important;font-weight:700!important;color:#374151!important;cursor:pointer!important;font-size:14px!important}
 @media(max-width:900px){
   .mobile-menu-btn{display:grid;place-items:center}
   #sidebar.side{display:block!important;position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:min(310px,86vw)!important;height:100vh!important;z-index:10000!important;background:#fff!important;padding:70px 12px 20px!important;overflow-y:auto!important;transform:translateX(-105%);transition:transform .25s ease!important;box-shadow:16px 0 40px #1113!important}
@@ -202,7 +206,7 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
   </header>
   <div class="portal-disclaimer"><strong>NOT AN OFFICIAL INSTITUTIONAL SYSTEM:</strong> This portal is for the use of the instructor only and is not an official system, website, or service of Ligao Community College. It is intended solely for instructional and academic record-management purposes.</div>
 
-  <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu" onclick="openMobileMenu()">☰</button>
+  <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open complete menu" title="Open complete menu" onclick="openMobileMenu()">☰</button>
 <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
 <aside id="mobileDrawer" class="mobile-drawer"><div class="mobile-head"><strong id="mobileMenuTitle">MENU</strong><button class="mobile-close" onclick="closeMobileMenu()">✕</button></div><div id="mobileNav" class="mobile-nav"></div></aside>
 <div class="shell">
@@ -451,8 +455,8 @@ function nav(id){
   document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
 }
 
-function openMobileMenu(){$("sidebar")?.classList.add("mobile-open");$("mobileOverlay")?.classList.add("open")}
-function closeMobileMenu(){$("sidebar")?.classList.remove("mobile-open");$("mobileOverlay")?.classList.remove("open")}
+function openMobileMenu(){renderMobileNav();$("mobileDrawer")?.classList.add("open");$("mobileOverlay")?.classList.add("open")}
+function closeMobileMenu(){$("mobileDrawer")?.classList.remove("open");$("mobileOverlay")?.classList.remove("open")}
 function mbtn(label,icon,page,fn=""){return `<button data-page="${page}" onclick="nav('${page}');${fn};closeMobileMenu()">${icon} ${label}</button>`}
 function renderMobileNav(){
   let n=$("mobileNav"),t=$("mobileMenuTitle");if(!n)return;
