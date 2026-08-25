@@ -93,6 +93,27 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 .block-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
 .block-card{background:#fff;border:1px solid #e8eaf2;border-radius:18px;padding:18px}
 .block-card h3{margin:0 0 6px;font-size:15px}.block-count{font-size:11px;color:#6b7280}
+
+/* Mobile navigation */
+.mobile-menu-btn{position:fixed;right:14px;top:12px;z-index:1000;display:none;border:1px solid var(--line);background:#fff;border-radius:12px;width:42px;height:42px;font-size:21px;cursor:pointer}
+.mobile-overlay{display:none;position:fixed;inset:0;background:#11182766;z-index:9998}
+.mobile-drawer{display:none;position:fixed;top:0;left:0;bottom:0;width:min(320px,88vw);background:#fff;z-index:9999;box-shadow:16px 0 40px #1113;overflow-y:auto;padding:18px 14px}
+.mobile-drawer.open{display:block}
+.mobile-overlay.open{display:block}
+.mobile-head{display:flex;justify-content:space-between;align-items:center;padding:6px 4px 16px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.mobile-close{border:0;background:#f3f4f6;border-radius:10px;padding:8px 11px;font-size:18px}
+.mobile-nav{display:flex;flex-direction:column;gap:4px}
+.mobile-nav button{border:0;background:transparent;text-align:left;padding:13px 12px;border-radius:12px;font-weight:700;color:#374151;cursor:pointer;font-size:13px}
+.mobile-nav button.active,.mobile-nav button:hover{background:#fdf1f2;color:var(--p)}
+.mobile-divider{height:1px;background:var(--line);margin:10px 4px}
+@media(max-width:900px){
+  .mobile-menu-btn{display:inline-grid;place-items:center}
+  #sidebar{display:none!important}
+  .shell{display:block;width:94%;margin-top:18px}
+  .main{width:100%}
+  .topbar{padding:0 3%;gap:8px}
+}
+@media(min-width:901px){.mobile-drawer,.mobile-overlay{display:none!important}}
 </style>
 </head>
 <body>
@@ -185,7 +206,10 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
   </header>
   <div class="portal-disclaimer"><strong>NOT AN OFFICIAL INSTITUTIONAL SYSTEM:</strong> This portal is for the use of the instructor only and is not an official system, website, or service of Ligao Community College. It is intended solely for instructional and academic record-management purposes.</div>
 
-  <div class="shell">
+  <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu" onclick="openMobileMenu()">☰</button>
+<div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
+<aside id="mobileDrawer" class="mobile-drawer"><div class="mobile-head"><strong id="mobileMenuTitle">MENU</strong><button class="mobile-close" onclick="closeMobileMenu()">✕</button></div><div id="mobileNav" class="mobile-nav"></div></aside>
+<div class="shell">
     <aside id="sidebar" class="side"></aside>
     <main class="main">
       <section id="studentPages">
@@ -245,7 +269,7 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 
 
         
-        <div id="sMaterials" class="page">
+        <div id="sAttendanceQR" class="page"><div class="welcome"><small>My Attendance</small><h1>My Attendance QR</h1><p>Show this unique QR to your instructor.</p></div><div id="studentQRArea" class="card" style="text-align:center"></div></div><div id="sAttendance" class="page"><div class="welcome"><small>My Attendance</small><h1>Attendance History</h1><p>Your attendance records.</p></div><div id="studentAttendanceArea" class="card"></div></div><div id="sMaterials" class="page">
           <div class="welcome"><small>Learning Resources</small><h1>Learning Materials</h1><p>Access materials uploaded and published by your NSTP instructor.</p></div>
           <div id="studentMaterials" class="material-grid"></div>
         </div>
@@ -429,6 +453,40 @@ function nav(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   $(id).classList.add("active");
   document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+}
+
+function openMobileMenu(){renderMobileNav();$("mobileDrawer")?.classList.add("open");$("mobileOverlay")?.classList.add("open")}
+function closeMobileMenu(){$("mobileDrawer")?.classList.remove("open");$("mobileOverlay")?.classList.remove("open")}
+function mbtn(label,icon,page,fn=""){return `<button data-page="${page}" onclick="nav('${page}');${fn};closeMobileMenu()">${icon} ${label}</button>`}
+function renderMobileNav(){
+  let n=$("mobileNav"),t=$("mobileMenuTitle");if(!n)return;
+  if(isAdmin){
+    if(t)t.textContent="ADMIN MENU";
+    n.innerHTML=[
+      mbtn("Dashboard","📊","aDashboard"),
+      mbtn("Students","👥","aStudents"),
+      mbtn("Blocks & Students","🧩","aBlocks","loadAdminBlocks()"),
+      mbtn("Grade Management","📝","aGrades"),
+      mbtn("Learning Materials","📚","aMaterials","loadAdminMaterials()"),
+      mbtn("Attendance Scanner","📱","aAttendance","loadAttendancePage()"),
+      mbtn("Evaluation Results","📋","aEvaluations","loadEvaluationResults()"),
+      '<div class="mobile-divider"></div>',
+      mbtn("Security","🔐","aSecurity")
+    ].join("");
+  }else{
+    if(t)t.textContent="STUDENT MENU";
+    n.innerHTML=[
+      mbtn("Dashboard","🏠","sDashboard"),
+      mbtn("Personal Information","👤","sPersonal"),
+      mbtn("Learning Materials","📖","sMaterials","loadStudentMaterials()"),
+      mbtn("My Attendance QR","📱","sAttendanceQR","loadStudentQR()"),
+      mbtn("My Attendance","📊","sAttendance","loadStudentAttendance()"),
+      mbtn("Grades","📚","sGrades","loadStudentGrades()"),
+      mbtn("Instructor Evaluation","📝","sEvaluation","loadEvaluation()"),
+      '<div class="mobile-divider"></div>',
+      mbtn("Security","🔐","sSecurity")
+    ].join("");
+  }
 }
 function studentSidebar(){
   $("sidebar").innerHTML=`<div class="navtitle">Student Menu</div>
