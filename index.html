@@ -1,172 +1,823 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Ligao City Centralized HHIMS</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#123a63">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Ligao HHIMS">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ligao Community College | NSTP Student Portal 2026–2027</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#8f1020;--p2:#c51f32;--c:#0b5e9a;--gold:#d7a21b;--green:#18733b;--ink:#172033;--muted:#6b7280;--bg:#f7f8fb;--card:#fff;--line:#e8eaf2;--ok:#059669;--bad:#dc2626;--warn:#d97706}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+button,input,textarea,select{font:inherit}.hidden{display:none!important}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:-1;background:radial-gradient(circle at 10% 10%,#c7d2fe 0,transparent 28%),radial-gradient(circle at 90% 20%,#cffafe 0,transparent 25%),#f7f8ff}.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.28;animation:float 12s ease-in-out infinite}.o1{width:380px;height:380px;background:#6366f1;left:-170px;top:-150px}.o2{width:300px;height:300px;background:#22d3ee;right:-120px;top:40%}.o3{width:260px;height:260px;background:#a78bfa;left:35%;bottom:-150px;animation-delay:3s}@keyframes float{50%{transform:translate(35px,-25px)}}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:22px}.auth-card{width:min(1080px,100%);min-height:650px;display:grid;grid-template-columns:1fr 1.05fr;background:#ffffffdd;backdrop-filter:blur(20px);border:1px solid #fff;border-radius:30px;overflow:hidden;box-shadow:0 30px 90px #28345c22;animation:up .7s ease}@keyframes up{from{opacity:0;transform:translateY(25px) scale(.98)}to{opacity:1;transform:none}}
+.hero{padding:45px;color:white;background:linear-gradient(145deg,#650817 0%,#9d1427 48%,#0b5e9a 100%);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:430px;height:430px;border:75px solid #ffffff10;border-radius:50%;right:-220px;top:-180px}.logo{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:#fff;border:4px solid #ffffff55;padding:6px;margin-bottom:22px;box-shadow:0 15px 35px #0003;overflow:hidden;animation:bob 4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-8px) rotate(2deg)}}.hero h1{font:800 43px/1.08 Poppins;margin:0 0 18px}.hero h1 span{color:#a5f3fc}.hero p{max-width:420px;color:#ffffffd9;line-height:1.75}.hero .mini{position:absolute;bottom:28px;left:55px;font-size:11px;color:#ffffff99}
+.form-side{padding:48px;display:grid;place-items:center}.form{width:min(440px,100%)}h2{font:800 30px Poppins;margin:0 0 7px}.sub{color:var(--muted);font-size:14px;margin:0 0 25px;line-height:1.6}.field{margin:0 0 15px}.field label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.input,.textarea,.select{width:100%;border:1px solid var(--line);background:#fafbff;border-radius:13px;padding:13px 14px;outline:none;transition:.2s}.input:focus,.textarea:focus,.select:focus{border-color:var(--p);box-shadow:0 0 0 4px #4f46e512;background:#fff}.textarea{min-height:82px;resize:vertical}.pw{position:relative}.pw .input{padding-right:45px}.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;cursor:pointer;opacity:.6}.btn{border:0;border-radius:13px;padding:13px 17px;font-weight:800;cursor:pointer;transition:.2s}.btn.primary{width:100%;color:white;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:0 12px 25px #4f46e533}.btn.primary:hover{transform:translateY(-2px)}.btn.secondary{background:#eef2ff;color:#4338ca}.btn.ghost{background:#f3f4f6;color:#374151}.btn.danger{background:#fee2e2;color:#991b1b}.switch{text-align:center;color:var(--muted);font-size:13px;margin-top:19px}.link{border:0;background:none;color:var(--p);font-weight:800;cursor:pointer}.msg{display:none;padding:11px 13px;border-radius:11px;font-size:13px;line-height:1.5;margin-bottom:15px}.msg.show{display:block}.msg.error{background:#fee2e2;color:#991b1b}.msg.ok{background:#d1fae5;color:#065f46}.smallnote{font-size:11px;color:#9ca3af;line-height:1.5;margin-top:8px}
+.app{min-height:100vh}.topbar{height:72px;background:#ffffffdd;backdrop-filter:blur(18px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 4.5%;position:sticky;top:0;z-index:50}.brand{display:flex;align-items:center;gap:11px;font-weight:800}.brandmark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:0 8px 18px #4f46e52b}.top-actions{display:flex;align-items:center;gap:10px}.pill{font-size:11px;font-weight:800;padding:7px 10px;border-radius:99px;background:#eef2ff;color:#4338ca}.logout{border:0;border-radius:10px;padding:9px 13px;background:#f3f4f6;font-weight:800;cursor:pointer}
+.shell{width:min(1240px,92%);margin:28px auto 55px;display:grid;grid-template-columns:225px 1fr;gap:25px}.side{background:#ffffffd9;border:1px solid #fff;border-radius:22px;padding:12px;height:max-content;position:sticky;top:95px;box-shadow:0 12px 30px #28345c0a}.navbtn{width:100%;border:0;background:none;text-align:left;padding:12px 13px;border-radius:12px;cursor:pointer;color:#4b5563;font-weight:700;margin:2px 0}.navbtn:hover,.navbtn.active{background:#eef2ff;color:#4338ca}.navtitle{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;padding:12px 13px 7px;font-weight:800}
+.main{min-width:0}.page{display:none;animation:pagein .4s ease}.page.active{display:block}@keyframes pagein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}.welcome small{color:var(--p);font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.welcome h1{font:800 34px Poppins;margin:6px 0}.welcome p{margin:0;color:var(--muted)}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px}.card{background:#fff;border:1px solid #fff;border-radius:20px;padding:21px;box-shadow:0 12px 30px #28345c0a}.label{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800;color:#9ca3af}.value{font-weight:800;margin-top:7px}.gradehero{margin-top:20px;padding:28px;border-radius:25px;color:#fff;background:linear-gradient(135deg,#4338ca,#7c3aed,#0891b2);position:relative;overflow:hidden}.gradehero:after{content:"";position:absolute;width:280px;height:280px;border:55px solid #ffffff10;border-radius:50%;right:-130px;top:-140px}.gradehero>*{position:relative;z-index:1}.gradebig{font:800 58px Poppins;margin:10px 0}.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px}.section-card{background:#fff;border-radius:22px;padding:23px;box-shadow:0 12px 30px #28345c0a;border:1px solid #fff}.section-card h3{font:800 20px Poppins;margin:0 0 3px}.muted{color:var(--muted);font-size:13px}.grade-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.grade-box{background:#f7f8ff;border-radius:16px;padding:18px;text-align:center}.grade-box b{display:block;font:800 30px Poppins;margin-top:8px;color:#4338ca}.pending{color:#9ca3af!important;font-size:22px!important}.status{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:99px;font-size:10px;font-weight:800;background:#ecfdf5;color:#047857}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.full{grid-column:1/-1}.section-title{font:800 20px Poppins;margin:0 0 18px}.savebar{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.admin-table-wrap{overflow:auto;background:#fff;border-radius:20px;box-shadow:0 12px 30px #28345c0a}.table{width:100%;border-collapse:collapse;min-width:720px}.table th,.table td{padding:12px 13px;border-bottom:1px solid #eef0f5;text-align:left;font-size:12px}.table th{background:#fafbff;color:#6b7280;text-transform:uppercase;font-size:10px;letter-spacing:.7px}.table input,.table select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff}.admin-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin:18px 0}.admin-toolbar .btn{white-space:nowrap}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.kpi{background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 25px #28345c0a}.kpi strong{display:block;font:800 27px Poppins;margin-top:6px}.empty{padding:35px;text-align:center;color:#9ca3af;background:#fff;border-radius:18px}.loader{position:fixed;inset:0;background:#ffffffcc;backdrop-filter:blur(8px);display:none;place-items:center;z-index:100}.loader.show{display:grid}.spin{width:45px;height:45px;border:4px solid #e5e7eb;border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite;margin:auto}@keyframes spin{to{transform:rotate(360deg)}}.toast{position:fixed;right:22px;bottom:22px;max-width:360px;padding:14px 17px;background:#111827;color:#fff;border-radius:13px;box-shadow:0 15px 40px #0003;display:none;z-index:110;font-size:13px}.toast.show{display:block}
+.modal{position:fixed;inset:0;background:#11182777;display:none;place-items:center;z-index:90;padding:18px}.modal.show{display:grid}.modalbox{background:#fff;border-radius:22px;padding:25px;width:min(480px,100%);max-height:90vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.close{border:0;background:#f3f4f6;border-radius:9px;padding:7px 10px;cursor:pointer}
+@media(max-width:900px){.auth-card{grid-template-columns:1fr}.hero{min-height:300px;padding:35px}.hero h1{font-size:32px}.hero .mini{display:none}.shell{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto;gap:5px}.navtitle{display:none}.navbtn{white-space:nowrap}.grid3,.cards2,.kpis{grid-template-columns:1fr}.admin-toolbar{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
+@media(max-width:520px){.auth-wrap{padding:10px}.form-side{padding:28px 20px}.topbar{padding:0 3%}.brand span{font-size:12px}.pill{display:none}.shell{width:94%;margin-top:18px}.admin-toolbar{grid-template-columns:1fr}.grade-row{grid-template-columns:1fr}.welcome h1{font-size:27px}}
+
+.school-kicker{font-size:11px;letter-spacing:1.7px;text-transform:uppercase;font-weight:800;color:#ffffffbf;margin-bottom:5px}
+.school-name{font:800 18px/1.15 Poppins;margin-bottom:18px}
+.school-meta{font-size:11px;color:#ffffffb8;line-height:1.55}
+.hero-divider{width:62px;height:4px;border-radius:10px;background:linear-gradient(90deg,#f5c542,#fff);margin:20px 0}
+.brand-copy{display:flex;flex-direction:column;line-height:1.05}
+.brand-copy strong{font:800 13px Poppins}
+.brand-copy span{font-size:9px;color:#6b7280;margin-top:4px}
+.topbar .brandmark{background:#fff;padding:3px;border:2px solid #8f1020;overflow:hidden}
+.topbar .brandmark img{width:100%;height:100%;object-fit:contain}
+.school-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:99px;background:#ffffff18;border:1px solid #ffffff2e;font-size:10px;font-weight:800;letter-spacing:.6px;margin-bottom:22px}
+.portal-title{font-size:12px;text-transform:uppercase;letter-spacing:1.8px;font-weight:800;color:#fce7ea}
+.hero h1{margin-top:0}
+.card,.section-card,.kpi,.side,.admin-table-wrap{border-color:#fff}
+.btn.primary{background:linear-gradient(135deg,#8f1020,#c51f32);box-shadow:0 12px 25px #8f102033}
+.btn.secondary{background:#fdf1f2;color:#8f1020}
+.link{color:#8f1020}
+.input:focus,.textarea:focus,.select:focus{border-color:#9d1427;box-shadow:0 0 0 4px #8f102012}
+.navbtn:hover,.navbtn.active{background:#fdf1f2;color:#8f1020}
+.brandmark{box-shadow:0 8px 18px #8f10202b}
+.gradehero{background:linear-gradient(135deg,#8f1020,#c51f32,#0b5e9a)}
+.grade-box b{color:#8f1020}
+.spin{border-top-color:#8f1020}
+
+.instructor-line{font-size:11px;color:#ffffffd9;margin-top:10px;font-weight:700;letter-spacing:.2px}
+.instructor-line strong{color:#fff}
+.footer-instructor{margin-top:28px;padding-top:16px;border-top:1px solid #e8eaf2;color:#6b7280;font-size:11px}
+.footer-instructor strong{color:#374151}
+
+.disclaimer{margin-top:22px;padding:13px 15px;border:1px solid #ffffff2e;background:#ffffff12;border-radius:13px;color:#ffffffcc;font-size:10px;line-height:1.55}
+.disclaimer strong{color:#fff}
+.login-disclaimer{margin-top:18px;padding:10px 12px;background:#fef3c7;color:#78350f;border-radius:11px;font-size:10px;line-height:1.5;border:1px solid #fde68a}
+.portal-disclaimer{margin:0 auto 18px;width:min(1240px,92%);padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;color:#78350f;border-radius:12px;font-size:10px;line-height:1.5}
+
+.eval-grid{display:grid;gap:18px}
+.eval-card{background:#fff;border:1px solid #e8eaf2;border-radius:18px;padding:20px}
+.eval-section-title{font:800 15px Poppins;margin-bottom:12px;color:#172033}
+.eval-question{padding:14px 0;border-top:1px solid #eef0f5}
+.eval-question:first-child{border-top:0}
+.eval-qtext{font-size:13px;font-weight:700;line-height:1.5;margin-bottom:10px}
+.rating{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.rating label{border:1px solid #e5e7eb;border-radius:12px;padding:9px 4px;text-align:center;font-size:11px;cursor:pointer;background:#fafbff}
+.rating input{display:block;margin:0 auto 5px;accent-color:#8f1020}
+.rating label:has(input:checked){background:#fdf1f2;border-color:#8f1020;color:#8f1020;font-weight:800}
+.eval-lock{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:15px;background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.eval-done{padding:16px;border-radius:15px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+.eval-note{font-size:11px;color:#6b7280;line-height:1.55}
+.eval-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.eval-stat{padding:15px;border-radius:15px;background:#f8fafc;border:1px solid #e8eaf2}
+.eval-stat b{display:block;font-size:24px;color:#8f1020;margin-top:4px}
+.eval-comment{padding:12px 14px;border-left:4px solid #d7a21b;background:#fffbeb;border-radius:10px;margin:8px 0;font-size:12px;line-height:1.5}
+@media(max-width:700px){.rating{grid-template-columns:repeat(5,1fr)}.eval-stats{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<header class="topbar">
-  <div>
-    <h1>Centralized Household Information Management System</h1>
-    <p>City Social Welfare and Development Office • Ligao City</p>
-  </div>
-  <button id="installAppBtn" class="btn secondary hidden">Install App</button>
-  <div id="sessionBox" class="session-box hidden">
-    <div><strong id="userName"></strong><span id="userRole"></span></div>
-    <button id="logoutBtn" class="btn secondary">Sign Out</button>
-  </div>
-</header>
+<div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 
-<main class="container">
-  <section id="pwaHelp" class="notice hidden"><strong>Android:</strong> Tap Install App when available, or use Chrome menu → Install app / Add to Home screen.</section>
-  <section id="configWarning" class="notice warning">
-    Configure <strong>config.js</strong> with your Supabase Project URL and Publishable Key before using the online system.
-  </section>
-
-  <section id="loginView" class="login-card">
-    <h2>Secure Login</h2>
-    <p>Authorized CSWDO users only.</p>
-    <form id="loginForm">
-      <label>Email<input id="email" type="email" autocomplete="username" required></label>
-      <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
-      <button class="btn primary full" type="submit">Sign In</button>
-      <p id="loginMessage" class="message"></p>
-    </form>
-  </section>
-
-  <section id="appView" class="hidden">
-    <section class="stats-grid">
-      <div class="stat-card"><span>Total Households</span><strong id="statHouseholds">0</strong></div>
-      <div class="stat-card"><span>Total Persons</span><strong id="statPersons">0</strong></div>
-      <div class="stat-card"><span>Barangays Visible</span><strong id="statBarangays">0</strong></div>
-      <div class="stat-card"><span>Senior Citizens</span><strong id="statSeniors">0</strong></div>
-      <div class="stat-card"><span>PWD</span><strong id="statPwd">0</strong></div>
-      <div class="stat-card"><span>4Ps</span><strong id="stat4ps">0</strong></div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-header">
-        <div><h2>Household Registry</h2><p id="scopeNote"></p></div>
-        <div class="actions">
-      <button id="exportExcelBtn" class="btn ghost">Export Excel</button>
-      <label class="btn ghost file-label">Import Excel<input id="importExcelFile" type="file" accept=".xlsx,.xls" hidden></label>
-      <button id="addHouseholdBtn" class="btn primary">+ Add Household</button>
+<div id="authView" class="auth-wrap">
+  <div class="auth-card">
+    <div class="hero">
+      <div class="school-badge">🏛️ CITY GOVERNMENT OF LIGAO</div>
+      <div class="logo"><img src="https://ligaocommunitycollege.wela.ph/files/ligao_temp_logo-removebg-preview.png" alt="Ligao Community College official logo" style="width:100%;height:100%;object-fit:contain"></div>
+      <div class="school-kicker">Higher Education Institution</div>
+      <div class="school-name">LIGAO COMMUNITY COLLEGE</div>
+      <div class="hero-divider"></div>
+      <div class="portal-title">NSTP Student Portal</div>
+      <h1>Learn. Serve.<br><span>Lead.</span></h1>
+      <p>Securely access your personal information and NSTP grades for Academic Year 2026–2027.</p>
+      <div class="school-meta">Literacy Training Service • First &amp; Second Semester • SY 2026–2027</div>
+      <div class="instructor-line">Instructor: <strong>Celito Joe M. Perillo</strong></div>
+      <div class="disclaimer"><strong>DISCLAIMER:</strong> This is <strong>NOT an official system of Ligao Community College.</strong> This portal is developed and maintained solely for the instructional and academic use of the instructor.</div>
+      <div class="mini">LiComCo • Tomolin, Ligao City, Albay</div>
     </div>
+    <div class="form-side">
+
+      <div id="loginBox" class="form">
+        <h2>Welcome back 👋</h2>
+        <p class="sub">Students sign in using their official Student Number. Administrators use their registered email.</p>
+        <div id="loginMsg" class="msg"></div>
+        <div class="field"><label>STUDENT NUMBER</label><input id="loginStudent" class="input" placeholder="2026-LTS-001" autocomplete="username"></div>
+        <div class="field"><label>PASSWORD</label><div class="pw"><input id="loginPass" class="input" type="password" placeholder="Your password" autocomplete="current-password"><button class="eye" onclick="togglePw('loginPass',this)">👁</button></div></div>
+        <button class="btn primary" onclick="studentLogin()">SIGN IN</button>
+        <div class="switch">First time here? <button class="link" onclick="showBox('register')">Create Account</button></div>
+        <div class="switch"><button class="link" onclick="showBox('forgot')">Forgot Password?</button></div>
+        <div class="switch">Administrator? <button class="link" onclick="showBox('admin')">Admin Login</button></div>
+        <div class="login-disclaimer"><strong>Notice:</strong> This is not an official institutional system. It is intended for the instructor's use in managing NSTP student academic records.</div>
       </div>
 
-      <div class="filters">
-        <input id="searchInput" type="search" placeholder="Search Household ID or name...">
-        <select id="barangayFilter"><option value="">All Accessible Barangays</option></select>
-        <select id="headFilter">
-          <option value="">All Households</option>
-          <option value="senior">Senior Citizen Household Heads</option>
-          <option value="pwd">PWD Household Heads</option>
-          <option value="4ps">4Ps Household Heads</option>
-        </select>
-        <button id="refreshBtn" class="btn ghost">Refresh</button>
+      <div id="registerBox" class="form hidden">
+        <h2>Create your account ✨</h2>
+        <p class="sub">Your Student Number is checked against the official 97-student NSTP roster. Your name and block are automatically retrieved.</p>
+        <div id="regMsg" class="msg"></div>
+        <div class="field"><label>STUDENT NUMBER</label><input id="regStudent" class="input" placeholder="2026-LTS-001"></div>
+        <button class="btn secondary" style="width:100%;margin-bottom:15px" onclick="lookupStudent()">VERIFY STUDENT NUMBER</button>
+        <div id="verified" class="card hidden" style="margin-bottom:15px;padding:15px">
+          <div class="label">OFFICIAL RECORD</div><div id="vName" class="value"></div><div id="vBlock" class="muted" style="margin-top:4px"></div>
+        </div>
+        <div class="field"><label>EMAIL ADDRESS</label><input id="regEmail" class="input" type="email" placeholder="your@email.com"></div>
+        <div class="field"><label>CONTACT NUMBER</label><input id="regContact" class="input" placeholder="09XXXXXXXXX"></div>
+        <div class="field"><label>BIRTHDATE</label><input id="regBirth" class="input" type="date"></div>
+        <div class="field"><label>PRESENT ADDRESS</label><textarea id="regPresent" class="textarea" placeholder="Complete present address"></textarea></div>
+        <div class="field"><label>HOME ADDRESS</label><textarea id="regHome" class="textarea" placeholder="Complete home address"></textarea></div>
+        <div class="field"><label>PARENT/GUARDIAN 1 NAME</label><input id="regP1" class="input" placeholder="Full name"></div>
+        <div class="field"><label>PARENT/GUARDIAN 1 CONTACT</label><input id="regP1c" class="input" placeholder="Contact number"></div>
+        <div class="field"><label>PARENT/GUARDIAN 2 NAME</label><input id="regP2" class="input" placeholder="Full name"></div>
+        <div class="field"><label>PARENT/GUARDIAN 2 CONTACT</label><input id="regP2c" class="input" placeholder="Contact number"></div>
+        <div class="field"><label>CREATE PASSWORD</label><div class="pw"><input id="regPass" class="input" type="password" minlength="8" placeholder="At least 8 characters"><button class="eye" onclick="togglePw('regPass',this)">👁</button></div></div>
+        <div class="field"><label>CONFIRM PASSWORD</label><input id="regPass2" class="input" type="password" minlength="8" placeholder="Repeat password"></div>
+        <button class="btn primary" onclick="registerStudent()">CREATE ACCOUNT</button>
+        <div class="switch"><button class="link" onclick="showBox('login')">← Back to Login</button></div>
       </div>
 
-      <div id="householdList" class="household-list"></div>
-    </section>
-
-    <section id="adminPanel" class="panel admin-panel hidden">
-      <div class="panel-header">
-        <div><h2>User & Access Overview</h2><p>Admin-only view of user accounts and access status.</p></div>
+      <div id="forgotBox" class="form hidden">
+        <h2>Reset Password 🔐</h2>
+        <p class="sub">Enter your Student Number. If an account exists, a reset link will be sent to its registered email.</p>
+        <div id="forgotMsg" class="msg"></div>
+        <div class="field"><label>STUDENT NUMBER</label><input id="forgotStudent" class="input" placeholder="2026-LTS-001"></div>
+        <button class="btn primary" onclick="forgotPassword()">SEND RESET LINK</button>
+        <div class="switch"><button class="link" onclick="showBox('login')">← Back to Login</button></div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Barangay Access</th><th>Status</th></tr></thead>
-          <tbody id="usersBody"></tbody>
-        </table>
+
+      <div id="adminBox" class="form hidden">
+        <h2>Administrator Login 🛡️</h2>
+        <p class="sub">Authorized NSTP administrators only.</p>
+        <div id="adminMsg" class="msg"></div>
+        <div class="field"><label>ADMIN EMAIL</label><input id="adminEmail" class="input" type="email" placeholder="admin@email.com" autocomplete="username"></div>
+        <div class="field"><label>PASSWORD</label><div class="pw"><input id="adminPass" class="input" type="password" placeholder="Admin password" autocomplete="current-password"><button class="eye" onclick="togglePw('adminPass',this)">👁</button></div></div>
+        <button class="btn primary" onclick="adminLogin()">ADMIN SIGN IN</button>
+        <div class="switch"><button class="link" onclick="showBox('login')">← Student Login</button></div>
       </div>
-      <div class="admin-note">User creation is intentionally handled in the Supabase Auth dashboard in this starter version so the browser never receives a service-role secret.</div>
-    </section>
-  </section>
-</main>
+    </div>
+  </div>
+</div>
 
-<dialog id="householdDialog">
-<form id="householdForm">
-  <input type="hidden" id="householdEditId">
-  <div class="dialog-header"><div><h2>Add Household</h2><p>One household has one Household Head.</p></div><button type="button" class="icon-btn" id="closeHousehold">✕</button></div>
-  <div class="form-grid">
-    <label>Barangay<select id="hhBarangay" required></select></label>
-    <label>Purok<input id="hhPurok"></label>
-    <label>No. of Families<input id="hhFamilies" type="number" min="1" value="1"></label>
-    <label>House Ownership<input id="hhOwnership"></label>
-    <label>Length of Residence<input id="hhResidence"></label>
-    <label>Interviewee<input id="hhInterviewee"></label>
-  </div>
-  <h3>Household Head</h3>
-  <div class="form-grid">
-    <label>Last Name<input id="headLast" required></label>
-    <label>First Name<input id="headFirst" required></label>
-    <label>Middle Name<input id="headMiddle"></label>
-    <label>Ext. Name<input id="headExt"></label>
-    <label>Birthdate<input id="headBirthdate" type="date"></label>
-    <label>Sex<select id="headSex"><option></option><option>M</option><option>F</option></select></label>
-    <label>Civil Status<input id="headCivil"></label>
-    <label>Education<input id="headEducation"></label>
-    <label>Occupation<input id="headOccupation"></label>
-    <label>Employment Address<input id="headEmployment"></label>
-  </div>
-  <div class="checks-grid">
-    <label><input id="headSenior" type="checkbox"> Senior Citizen</label>
-    <label><input id="headPwd" type="checkbox"> PWD</label>
-    <label><input id="headPregnant" type="checkbox"> Pregnant</label>
-    <label><input id="headLactating" type="checkbox"> Lactating</label>
-    <label><input id="headMedical" type="checkbox"> Medical Condition</label>
-    <label><input id="headFourPs" type="checkbox"> 4Ps</label>
-  </div>
-  <div class="dialog-actions"><button type="button" class="btn ghost" id="cancelHousehold">Cancel</button><button type="submit" class="btn primary">Save Household</button></div>
-</form>
-</dialog>
+<div id="appView" class="app hidden">
+  <header class="topbar">
+    <div class="brand">
+  <div class="brandmark"><img src="https://ligaocommunitycollege.wela.ph/files/ligao_temp_logo-removebg-preview.png" alt="LiComCo logo"></div>
+  <div class="brand-copy"><strong id="topTitle">Ligao Community College</strong><span>NSTP Student Portal • SY 2026–2027 • Instructor: Celito Joe M. Perillo</span></div>
+</div>
+    <div class="top-actions"><span id="rolePill" class="pill">STUDENT</span><button class="logout" onclick="logout()">Log Out</button></div>
+  </header>
+  <div class="portal-disclaimer"><strong>NOT AN OFFICIAL INSTITUTIONAL SYSTEM:</strong> This portal is for the use of the instructor only and is not an official system, website, or service of Ligao Community College. It is intended solely for instructional and academic record-management purposes.</div>
 
-<dialog id="memberDialog">
-<form id="memberForm">
-  <div class="dialog-header"><div><h2>Add Household Member</h2><p id="memberContext"></p></div><button type="button" class="icon-btn" id="closeMember">✕</button></div>
-  <input type="hidden" id="memberHouseholdId">
-  <input type="hidden" id="memberEditId">
-  <div class="form-grid">
-    <label>Family Number<input id="memberFamilyNo" type="number" min="1" value="1"></label>
-    <label>Relationship to Household Head<input id="memberRelation" required></label>
-    <label>Last Name<input id="memberLast" required></label>
-    <label>First Name<input id="memberFirst" required></label>
-    <label>Middle Name<input id="memberMiddle"></label>
-    <label>Ext. Name<input id="memberExt"></label>
-    <label>Birthdate<input id="memberBirthdate" type="date"></label>
-    <label>Sex<select id="memberSex"><option></option><option>M</option><option>F</option></select></label>
-    <label>Civil Status<input id="memberCivil"></label>
-    <label>Education<input id="memberEducation"></label>
-    <label>Occupation<input id="memberOccupation"></label>
-    <label>Employment Address<input id="memberEmployment"></label>
-  </div>
-  <div class="checks-grid">
-    <label><input id="memberSenior" type="checkbox"> Senior Citizen</label>
-    <label><input id="memberPwd" type="checkbox"> PWD</label>
-    <label><input id="memberPregnant" type="checkbox"> Pregnant</label>
-    <label><input id="memberLactating" type="checkbox"> Lactating</label>
-    <label><input id="memberMedical" type="checkbox"> Medical Condition</label>
-    <label><input id="memberFourPs" type="checkbox"> 4Ps</label>
-  </div>
-  <div class="dialog-actions"><button type="button" class="btn ghost" id="cancelMember">Cancel</button><button type="submit" class="btn primary">Save Member</button></div>
-</form>
-</dialog>
+  <div class="shell">
+    <aside id="sidebar" class="side"></aside>
+    <main class="main">
+      <section id="studentPages">
 
-<script src="config.js"></script>
-<script src="app.js"></script>
+        <div id="sDashboard" class="page active">
+          <div class="welcome"><small>Ligao Community College • NSTP</small><h1>Hello, <span id="dashName">Student</span>! 👋</h1><p>Welcome to your official NSTP academic portal for SY 2026–2027.</p><div class="footer-instructor">Instructor: <strong>Celito Joe M. Perillo</strong><br><span style="font-size:10px">This is not an official institutional system of Ligao Community College. For instructor use only.</span></div></div>
+          <div class="grid3">
+            <div class="card"><div class="label">Student Number</div><div id="dashNo" class="value">—</div></div>
+            <div class="card"><div class="label">Block</div><div id="dashBlock" class="value">—</div></div>
+            <div class="card"><div class="label">Academic Year</div><div class="value">2026–2027</div></div>
+          </div>
+          <div class="gradehero"><div class="label" style="color:#ffffffaa">CURRENT GRADE</div><div style="font:800 23px Poppins;margin-top:5px">NSTP 1 • Midterm</div><div id="dashGrade" class="gradebig">—</div><div id="dashGradeStatus" style="font-size:12px;font-weight:800">Not yet published</div></div>
+        </div>
+
+        <div id="sPersonal" class="page">
+          <div class="welcome"><small>My Profile</small><h1>Personal Information</h1><p>Keep your contact and family information updated.</p></div>
+          <div class="card" style="margin-top:20px">
+            <div class="section-title">Official Information</div>
+            <div class="formgrid">
+              <div class="field"><label>STUDENT NUMBER</label><input id="pNo" class="input" readonly></div>
+              <div class="field"><label>FULL NAME</label><input id="pName" class="input" readonly></div>
+              <div class="field"><label>BLOCK</label><input id="pBlock" class="input" readonly></div>
+              <div class="field"><label>COURSE</label><input id="pCourse" class="input" readonly></div>
+            </div>
+            <div class="section-title" style="margin-top:25px">Personal Details</div>
+            <div class="formgrid">
+              <div class="field full"><label>PRESENT ADDRESS</label><textarea id="pPresent" class="textarea"></textarea></div>
+              <div class="field full"><label>HOME ADDRESS</label><textarea id="pHome" class="textarea"></textarea></div>
+              <div class="field"><label>EMAIL ADDRESS</label><input id="pEmail" class="input" type="email"></div>
+              <div class="field"><label>CONTACT NUMBER</label><input id="pContact" class="input"></div>
+              <div class="field"><label>BIRTHDATE</label><input id="pBirth" class="input" type="date"></div>
+            </div>
+            <div class="section-title" style="margin-top:25px">Parents / Guardians</div>
+            <div class="formgrid">
+              <div class="field"><label>PARENT/GUARDIAN 1</label><input id="pP1" class="input"></div>
+              <div class="field"><label>CONTACT NUMBER</label><input id="pP1c" class="input"></div>
+              <div class="field"><label>PARENT/GUARDIAN 2</label><input id="pP2" class="input"></div>
+              <div class="field"><label>CONTACT NUMBER</label><input id="pP2c" class="input"></div>
+            </div>
+            <div class="savebar"><button class="btn primary" style="width:auto" onclick="saveProfile()">SAVE INFORMATION</button></div>
+          </div>
+        </div>
+
+        <div id="sGrades" class="page">
+          <div class="welcome"><small>Academic Records</small><h1>My Grades</h1><p>Your published NSTP grades appear here. Final grades require completion of the instructor evaluation.</p></div>
+          <div class="cards2">
+            <div class="section-card">
+              <h3>NSTP 1</h3><div class="muted">LITERACY TRAINING SERVICE 1</div><div class="muted">First Semester • SY 2026–2027</div>
+              <div class="grade-row"><div class="grade-box"><div class="label">MIDTERM GRADE</div><b id="g1m" class="pending">—</b></div><div class="grade-box"><div class="label">FINAL GRADE</div><b id="g1f" class="pending">🔒 Locked</b></div></div>
+            </div>
+            <div class="section-card">
+              <h3>NSTP 2</h3><div class="muted">LITERACY TRAINING SERVICE 2</div><div class="muted">Second Semester • SY 2026–2027</div>
+              <div class="grade-row"><div class="grade-box"><div class="label">MIDTERM GRADE</div><b id="g2m" class="pending">—</b></div><div class="grade-box"><div class="label">FINAL GRADE</div><b id="g2f" class="pending">🔒 Locked</b></div></div>
+            </div>
+          </div>
+        </div>
+
+
+        <div id="sEvaluation" class="page">
+          <div class="welcome"><small>Confidential Instructor Evaluation</small><h1>Evaluate Your Instructor</h1><p>Your feedback helps improve NSTP teaching and learning.</p></div>
+          <div id="evaluationArea" class="eval-grid"></div>
+        </div>
+
+        <div id="sSecurity" class="page">
+          <div class="welcome"><small>Account Security</small><h1>Password & Email</h1><p>Manage the email associated with your account and password.</p></div>
+          <div class="card" style="margin-top:20px;max-width:650px">
+            <div class="section-title">Change Password</div>
+            <div id="secMsg" class="msg"></div>
+            <div class="field"><label>NEW PASSWORD</label><input id="newPass" class="input" type="password" minlength="8" placeholder="At least 8 characters"></div>
+            <div class="field"><label>CONFIRM NEW PASSWORD</label><input id="newPass2" class="input" type="password" minlength="8" placeholder="Repeat password"></div>
+            <button class="btn primary" style="width:auto" onclick="changePassword()">CHANGE PASSWORD</button>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="adminPages" class="hidden">
+        <div id="aDashboard" class="page active">
+          <div class="welcome"><small>Administrator</small><h1>LiComCo NSTP Grade Management</h1><p>Manage students and publish NSTP 1 and NSTP 2 grades.</p><div class="footer-instructor">Instructor: <strong>Celito Joe M. Perillo</strong><br><span style="font-size:10px">This is not an official institutional system of Ligao Community College. For instructor use only.</span></div></div>
+          <div class="kpis">
+            <div class="kpi"><div class="label">TOTAL STUDENTS</div><strong id="kTotal">97</strong></div>
+            <div class="kpi"><div class="label">SOCIAL STUDIES A</div><strong>33</strong></div>
+            <div class="kpi"><div class="label">BECED 1-A</div><strong>29</strong></div>
+            <div class="kpi"><div class="label">BSED 1 MATH</div><strong>35</strong></div>
+          </div>
+          <div class="card"><div class="section-title">Quick Grade Entry</div><p class="muted">Choose Grade Management to enter, save, and publish grades for the selected class and term.</p><button class="btn primary" style="width:auto;margin-top:10px" onclick="nav('aGrades')">OPEN GRADE MANAGEMENT</button></div>
+          <div class="card" style="margin-top:18px"><div class="section-title">Instructor Evaluation</div><p class="muted">View anonymous, aggregated student feedback. Individual student identities and raw submissions are not displayed.</p><button class="btn secondary" style="width:auto;margin-top:10px" onclick="nav('aEvaluations');loadEvaluationResults()">VIEW EVALUATION RESULTS</button></div>
+        </div>
+
+        <div id="aStudents" class="page">
+          <div class="welcome"><small>Roster</small><h1>Students</h1><p>Official NSTP student roster and registered account information.</p></div>
+          <div class="admin-toolbar">
+            <input id="studentSearch" class="input" placeholder="Search student number or name" oninput="renderStudents()">
+            <select id="studentBlockFilter" class="select" onchange="renderStudents()"><option value="">All Blocks</option><option>BSED 1 Social Studies A</option><option>BECED 1-A</option><option>BSED 1 Math</option></select>
+            <button class="btn secondary" onclick="loadAdminData()">REFRESH</button>
+          </div>
+          <div id="studentTable" class="admin-table-wrap"></div>
+        </div>
+
+        <div id="aGrades" class="page">
+          <div class="welcome"><small>Grade Management</small><h1>Enter & Publish Grades</h1><p>Changes are saved by student and term. Students only see grades marked as published.</p></div>
+          <div class="admin-toolbar">
+            <select id="gradeSubject" class="select" onchange="loadAdminGrades()"><option value="NSTP 1: LITERACY TRAINING SERVICE 1">NSTP 1: LITERACY TRAINING SERVICE 1</option><option value="NSTP 2: LITERACY TRAINING SERVICE 2">NSTP 2: LITERACY TRAINING SERVICE 2</option></select>
+            <select id="gradeTerm" class="select" onchange="loadAdminGrades()"><option value="Midterm">Midterm</option><option value="Final">Final</option></select>
+            <select id="gradeBlock" class="select" onchange="loadAdminGrades()"><option value="">All Blocks</option><option>BSED 1 Social Studies A</option><option>BECED 1-A</option><option>BSED 1 Math</option></select>
+            <button class="btn secondary" onclick="loadAdminGrades()">REFRESH</button>
+          </div>
+          <div class="savebar" style="justify-content:flex-start;margin:0 0 15px"><button class="btn primary" style="width:auto" onclick="saveAllGrades()">SAVE ALL CHANGES</button><button class="btn secondary" onclick="publishAll(true)">PUBLISH VISIBLE</button><button class="btn ghost" onclick="publishAll(false)">UNPUBLISH VISIBLE</button></div>
+          <div id="gradeTable" class="admin-table-wrap"></div>
+        </div>
+
+        <div id="aEvaluations" class="page">
+          <div class="welcome"><small>Anonymous Evaluation Summary</small><h1>Instructor Evaluation Results</h1><p>Results are shown in aggregate. Individual student identities are not displayed.</p></div>
+          <div class="admin-toolbar"><select id="adminEvalSemester" class="select" onchange="loadEvaluationResults()"><option value="First Semester">First Semester • NSTP 1</option><option value="Second Semester">Second Semester • NSTP 2</option></select><button class="btn secondary" onclick="loadEvaluationResults()">REFRESH</button></div>
+          <div id="evaluationResults" class="eval-grid"></div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="modal" class="modal"><div class="modalbox"><div class="modalhead"><h3 id="modalTitle" style="font-family:Poppins;margin:0">Student</h3><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+<div id="resetModal" class="modal"><div class="modalbox"><div class="modalhead"><h3 style="font-family:Poppins;margin:0">Create New Password 🔐</h3></div><div id="resetMsg" class="msg"></div><p class="muted" style="margin-bottom:16px">Choose a new password for your NSTP Student Portal account.</p><div class="field"><label>NEW PASSWORD</label><input id="resetPass" class="input" type="password" minlength="8" placeholder="At least 8 characters"></div><div class="field"><label>CONFIRM PASSWORD</label><input id="resetPass2" class="input" type="password" minlength="8" placeholder="Repeat password"></div><button class="btn primary" onclick="completeReset()">UPDATE PASSWORD</button></div></div>
+<div id="loader" class="loader"><div><div class="spin"></div><p style="text-align:center;color:#6b7280;font-size:13px">Please wait...</p></div></div>
+<div id="toast" class="toast"></div>
+
 <script>
-if ("serviceWorker" in navigator) {
- window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(console.error));
+const SUPABASE_URL="https://edqwkorpppwwpibdfrjl.supabase.co";
+const SUPABASE_KEY="sb_publishable_aXpIvVDCADsWrNdj5qPTuA_8Na8uqLd";
+const FUNCTION_URL=SUPABASE_URL+"/functions/v1/student-auth";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser=null,currentProfile=null,isAdmin=false,roster=[],adminGrades=[],currentEvaluationSemester="First Semester";
+
+function $(id){return document.getElementById(id)}
+function norm(v){return String(v||"").trim().toUpperCase().replace(/\s+/g,"")}
+function validSN(v){return /^2026-LTS-\d{3}$/.test(norm(v))}
+function showLoader(v=true){$("loader").classList.toggle("show",v)}
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),3500)}
+function setMsg(id,text,type="error"){let e=$(id);e.textContent=text;e.className="msg show "+(type==="ok"?"ok":"error")}
+function clearMsg(id){$(id).className="msg";$(id).textContent=""}
+function togglePw(id,b){let x=$(id);x.type=x.type==="password"?"text":"password";b.textContent=x.type==="password"?"👁":"🙈"}
+function showBox(which){
+  ["login","register","forgot","admin"].forEach(x=>$(x+"Box").classList.toggle("hidden",x!==which));
+  ["loginMsg","regMsg","forgotMsg","adminMsg"].forEach(clearMsg);
 }
+function nav(id){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  $(id).classList.add("active");
+  document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+}
+function studentSidebar(){
+  $("sidebar").innerHTML=`<div class="navtitle">Student Menu</div>
+  <button class="navbtn active" data-page="sDashboard" onclick="nav('sDashboard')">🏠 Dashboard</button>
+  <button class="navbtn" data-page="sPersonal" onclick="nav('sPersonal')">👤 Personal Information</button>
+  <button class="navbtn" data-page="sGrades" onclick="nav('sGrades');loadStudentGrades()">📚 Grades</button>
+  <button class="navbtn" data-page="sEvaluation" onclick="nav('sEvaluation');loadEvaluation()">📝 Instructor Evaluation</button>
+  <button class="navbtn" data-page="sSecurity" onclick="nav('sSecurity')">🔐 Security</button>`;
+}
+function adminSidebar(){
+  $("sidebar").innerHTML=`<div class="navtitle">Admin Menu</div>
+  <button class="navbtn active" data-page="aDashboard" onclick="nav('aDashboard')">📊 Dashboard</button>
+  <button class="navbtn" data-page="aStudents" onclick="nav('aStudents')">👥 Students</button>
+  <button class="navbtn" data-page="aGrades" onclick="nav('aGrades')">📝 Grade Management</button>
+  <button class="navbtn" data-page="aEvaluations" onclick="nav('aEvaluations');loadEvaluationResults()">📋 Evaluation Results</button>`;
+}
+async function fn(action,payload={}){
+  let r=await fetch(FUNCTION_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({action,...payload})});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok)throw new Error(j.error||"Request failed");
+  return j;
+}
+async function lookupStudent(){
+  let sn=norm($("regStudent").value);
+  if(!validSN(sn)){setMsg("regMsg","Enter a valid Student Number such as 2026-LTS-001.");return}
+  showLoader(true);
+  try{
+    let j=await fn("verify-roster",{student_number:sn});
+    if(!j.student)throw new Error("Student Number was not found in the official NSTP roster.");
+    $("verified").classList.remove("hidden");$("vName").textContent=j.student.full_name;$("vBlock").textContent=j.student.block+" • "+j.student.course;
+    $("regStudent").value=sn;setMsg("regMsg","Student record verified. Complete the information below.","ok");
+  }catch(e){setMsg("regMsg",e.message)}finally{showLoader(false)}
+}
+async function registerStudent(){
+  clearMsg("regMsg");
+  let sn=norm($("regStudent").value),email=$("regEmail").value.trim().toLowerCase(),pass=$("regPass").value,pass2=$("regPass2").value;
+  if(!validSN(sn))return setMsg("regMsg","Verify a valid Student Number first.");
+  if($("verified").classList.contains("hidden"))return setMsg("regMsg","Please click VERIFY STUDENT NUMBER first.");
+  if(!email)return setMsg("regMsg","Email address is required.");
+  if(pass.length<8)return setMsg("regMsg","Password must contain at least 8 characters.");
+  if(pass!==pass2)return setMsg("regMsg","Passwords do not match.");
+  showLoader(true);
+  try{
+    let j=await fn("register",{student_number:sn,email,password:pass,present_address:$("regPresent").value,home_address:$("regHome").value,contact_number:$("regContact").value,birthdate:$("regBirth").value||null,parent1_name:$("regP1").value,parent1_contact:$("regP1c").value,parent2_name:$("regP2").value,parent2_contact:$("regP2c").value});
+    if(j.session)await sb.auth.setSession(j.session);
+    else{
+      let {error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+    }
+    toast("Account created successfully 🎉");await startStudent();
+  }catch(e){setMsg("regMsg",e.message)}finally{showLoader(false)}
+}
+async function studentLogin(){
+  let sn=norm($("loginStudent").value),pass=$("loginPass").value;
+  if(!validSN(sn))return setMsg("loginMsg","Enter a valid Student Number.");
+  if(!pass)return setMsg("loginMsg","Enter your password.");
+  showLoader(true);
+  try{
+    let j=await fn("login",{student_number:sn,password:pass});
+    if(!j.session)throw new Error("No secure session was returned.");
+    await sb.auth.setSession(j.session);await startStudent();
+  }catch(e){setMsg("loginMsg","Invalid Student Number or password.")}finally{showLoader(false)}
+}
+async function forgotPassword(){
+  let sn=norm($("forgotStudent").value);
+  if(!validSN(sn))return setMsg("forgotMsg","Enter a valid Student Number.");
+  showLoader(true);
+  try{
+    let j=await fn("forgot-password",{student_number:sn,redirect_to:location.origin+location.pathname});
+    setMsg("forgotMsg",j.message,"ok");
+  }catch(e){setMsg("forgotMsg","We could not process the request. Please try again later.")}finally{showLoader(false)}
+}
+async function adminLogin(){
+  let email=$("adminEmail").value.trim(),pass=$("adminPass").value;
+  if(!email||!pass)return setMsg("adminMsg","Enter your administrator email and password.");
+  showLoader(true);
+  try{
+    let {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error)throw error;
+    let {data:role,error:re}=await sb.from("user_roles").select("role").eq("user_id",data.user.id).maybeSingle();
+    if(re||!role||role.role!=="admin"){await sb.auth.signOut();throw new Error("Not authorized.");}
+    currentUser=data.user;isAdmin=true;await startAdmin();
+  }catch(e){setMsg("adminMsg","Administrator login failed or account is not authorized.")}finally{showLoader(false)}
+}
+async function startStudent(){
+  let {data:{user}}=await sb.auth.getUser();if(!user)return;
+  currentUser=user;isAdmin=false;
+  let {data:p,error}=await sb.from("student_profiles").select("*").eq("id",user.id).single();
+  if(error||!p)throw new Error("Student profile could not be loaded.");
+  currentProfile=p;
+  $("authView").classList.add("hidden");$("appView").classList.remove("hidden");$("topTitle").textContent="NSTP Student Portal";$("rolePill").textContent="STUDENT";studentSidebar();
+  $("studentPages").classList.remove("hidden");$("adminPages").classList.add("hidden");nav("sDashboard");fillProfile();await loadStudentGrades();
+}
+async function startAdmin(){
+  $("authView").classList.add("hidden");$("appView").classList.remove("hidden");$("topTitle").textContent="LiComCo NSTP Admin Portal";$("rolePill").textContent="ADMIN";adminSidebar();
+  $("studentPages").classList.add("hidden");$("adminPages").classList.remove("hidden");nav("aDashboard");await loadAdminData();await loadAdminGrades();
+}
+function fillProfile(){
+  $("dashName").textContent=currentProfile.full_name.split(",")[1]?.trim()||currentProfile.full_name;
+  $("dashNo").textContent=currentProfile.student_number;$("dashBlock").textContent=currentProfile.section;
+  $("pNo").value=currentProfile.student_number;$("pName").value=currentProfile.full_name;$("pBlock").value=currentProfile.section;$("pCourse").value=currentProfile.course||"NSTP 1";
+  $("pPresent").value=currentProfile.present_address||"";$("pHome").value=currentProfile.home_address||"";$("pEmail").value=currentProfile.email||currentUser.email||"";
+  $("pContact").value=currentProfile.contact_number||"";$("pBirth").value=currentProfile.birthdate||"";$("pP1").value=currentProfile.parent1_name||"";$("pP1c").value=currentProfile.parent1_contact||"";$("pP2").value=currentProfile.parent2_name||"";$("pP2c").value=currentProfile.parent2_contact||"";
+}
+async function loadStudentGrades(){
+  try{
+    let {data,error}=await sb.rpc("get_my_nstp_grades");
+    if(error)throw error;
+    data=data||[];
+
+    let find=(sub,term,year)=>data.find(x=>x.subject===sub&&x.term===term&&x.academic_year===year);
+    let a=find("NSTP 1: LITERACY TRAINING SERVICE 1","Midterm","2026-2027");
+    let b=find("NSTP 1: LITERACY TRAINING SERVICE 1","Final","2026-2027");
+    let c=find("NSTP 2: LITERACY TRAINING SERVICE 2","Midterm","2026-2027");
+    let d=find("NSTP 2: LITERACY TRAINING SERVICE 2","Final","2026-2027");
+
+    let {data:e1,error:e1err}=await sb.from("evaluation_submissions")
+      .select("id").eq("student_id",currentUser.id).eq("academic_year","2026-2027").eq("semester","First Semester").maybeSingle();
+    let {data:e2,error:e2err}=await sb.from("evaluation_submissions")
+      .select("id").eq("student_id",currentUser.id).eq("academic_year","2026-2027").eq("semester","Second Semester").maybeSingle();
+
+    if(e1err && e1err.code!=="PGRST116")throw e1err;
+    if(e2err && e2err.code!=="PGRST116")throw e2err;
+
+    setGrade("g1m",a);
+    setFinalGrade("g1f",b,!!e1);
+    setGrade("g2m",c);
+    setFinalGrade("g2f",d,!!e2);
+
+    if(a){
+      $("dashGrade").textContent=Number(a.grade).toFixed(2);
+      $("dashGradeStatus").textContent="Published";
+    }else{
+      $("dashGrade").textContent="—";
+      $("dashGradeStatus").textContent="Not yet published";
+    }
+  }catch(e){
+    console.error(e);
+    toast("Grades could not be loaded. Please run the supplied Supabase SQL setup.");
+  }
+}
+function setGrade(id,row){let e=$(id);if(row&&row.grade!==null&&row.grade!==undefined){e.textContent=Number(row.grade).toFixed(2);e.classList.remove("pending")}else{e.textContent="—";e.classList.add("pending")}}
+async function saveProfile(){
+  showLoader(true);
+  try{
+    let newEmail=$("pEmail").value.trim().toLowerCase();
+    if(!newEmail)throw new Error("Email address is required.");
+    if(newEmail!==currentUser.email){
+      let {error}=await sb.auth.updateUser({email:newEmail});if(error)throw error;
+    }
+    let update={present_address:$("pPresent").value,home_address:$("pHome").value,email:newEmail,contact_number:$("pContact").value,birthdate:$("pBirth").value||null,parent1_name:$("pP1").value,parent1_contact:$("pP1c").value,parent2_name:$("pP2").value,parent2_contact:$("pP2c").value};
+    let {data,error}=await sb.from("student_profiles").update(update).eq("id",currentUser.id).select("*").single();
+    if(error)throw error;currentProfile=data;fillProfile();toast(newEmail!==currentUser.email?"Information saved. Check your email if Supabase requires email confirmation.":"Personal information saved.");
+  }catch(e){toast(e.message)}finally{showLoader(false)}
+}
+async function changePassword(){
+  let p=$("newPass").value,p2=$("newPass2").value;if(p.length<8)return setMsg("secMsg","Password must contain at least 8 characters.");if(p!==p2)return setMsg("secMsg","Passwords do not match.");
+  showLoader(true);try{let {error}=await sb.auth.updateUser({password:p});if(error)throw error;setMsg("secMsg","Password changed successfully.","ok");$("newPass").value="";$("newPass2").value=""}catch(e){setMsg("secMsg",e.message)}finally{showLoader(false)}
+}
+
+const EVALUATION_SECTIONS = [
+  {
+    title:"A. Teaching and Lesson Delivery",
+    questions:[
+      "The instructor explains lessons clearly.",
+      "The instructor demonstrates mastery of the subject matter.",
+      "The instructor presents lessons in an organized manner.",
+      "The instructor uses examples that help me understand the topic.",
+      "The instructor encourages questions and discussion."
+    ]
+  },
+  {
+    title:"B. Learning Environment",
+    questions:[
+      "The instructor treats students with respect.",
+      "The instructor creates a positive learning environment.",
+      "The instructor is approachable when students need assistance.",
+      "The instructor encourages student participation.",
+      "The instructor treats students fairly."
+    ]
+  },
+  {
+    title:"C. Learning Materials and Activities",
+    questions:[
+      "The learning materials provided are useful.",
+      "The activities help reinforce the lessons.",
+      "The instructor provides adequate materials for review.",
+      "The online learning resources are accessible and helpful."
+    ]
+  },
+  {
+    title:"D. Assessment and Feedback",
+    questions:[
+      "The instructor provides clear instructions for activities and assessments.",
+      "The grading and assessment criteria are clearly communicated.",
+      "Feedback helps me improve my learning.",
+      "Assessments are related to the lessons discussed."
+    ]
+  },
+  {
+    title:"E. Professionalism",
+    questions:[
+      "The instructor demonstrates professionalism.",
+      "The instructor manages class time effectively.",
+      "The instructor is prepared for class.",
+      "The instructor communicates important announcements clearly."
+    ]
+  },
+  {
+    title:"F. Overall Evaluation",
+    questions:[
+      "Overall, the instructor effectively facilitates my learning.",
+      "I would recommend the instructor's teaching approach to future NSTP students."
+    ]
+  }
+];
+
+function evaluationQuestionsHTML(){
+  let n=0,out="";
+  for(const section of EVALUATION_SECTIONS){
+    out+=`<div class="eval-card"><div class="eval-section-title">${esc(section.title)}</div>`;
+    for(const q of section.questions){
+      out+=`<div class="eval-question"><div class="eval-qtext">${++n}. ${esc(q)}</div>
+      <div class="rating">
+        ${[5,4,3,2,1].map(v=>`<label><input required type="radio" name="eval_${n}" value="${v}">${v}<br><span>${v===5?"Outstanding":v===4?"Very Satisfactory":v===3?"Satisfactory":v===2?"Needs Improvement":"Poor"}</span></label>`).join("")}
+      </div></div>`;
+    }
+    out+="</div>";
+  }
+  return out;
+}
+
+async function loadEvaluation(){
+  let area=$("evaluationArea");
+  if(!area)return;
+  showLoader(true);
+  try{
+    let semester=currentEvaluationSemester;
+    let {data:existing,error}=await sb.from("evaluation_submissions")
+      .select("id,submitted_at")
+      .eq("student_id",currentUser.id)
+      .eq("academic_year","2026-2027")
+      .eq("semester",semester)
+      .maybeSingle();
+    if(error && error.code!=="PGRST116")throw error;
+
+    if(existing){
+      area.innerHTML=`<div class="eval-done"><strong>✓ Evaluation Completed</strong><br><span class="eval-note">Thank you for completing the instructor evaluation on ${new Date(existing.submitted_at).toLocaleString()}.</span></div>`;
+      return;
+    }
+
+    area.innerHTML=`<div class="eval-card"><div class="field"><label>SEMESTER</label><select id="evalSemester" class="select"><option value="First Semester">First Semester • NSTP 1</option><option value="Second Semester">Second Semester • NSTP 2</option></select></div></div>
+    <div class="eval-lock"><div style="font-size:22px">🔐</div><div><strong>Confidential Evaluation</strong><div class="eval-note">Please answer honestly and respectfully. Your individual responses are not shown to the instructor. Completing the evaluation is required before the corresponding published Final Grade becomes viewable.</div></div></div>
+    <form id="evaluationForm">
+      ${evaluationQuestionsHTML()}
+      <div class="eval-card">
+        <div class="eval-section-title">Open-Ended Feedback</div>
+        <div class="field"><label>WHAT DO YOU APPRECIATE MOST ABOUT THE INSTRUCTOR?</label><textarea id="evalAppreciation" class="textarea" maxlength="2000"></textarea></div>
+        <div class="field"><label>WHAT CAN THE INSTRUCTOR IMPROVE?</label><textarea id="evalImprovement" class="textarea" maxlength="2000"></textarea></div>
+        <div class="field"><label>SUGGESTIONS FOR IMPROVING NSTP CLASSES</label><textarea id="evalSuggestions" class="textarea" maxlength="2000"></textarea></div>
+        <div class="eval-note">Scale: 5 = Outstanding, 4 = Very Satisfactory, 3 = Satisfactory, 2 = Needs Improvement, 1 = Poor.</div>
+        <div style="margin-top:16px"><button type="submit" class="btn primary" style="width:auto">SUBMIT EVALUATION</button></div>
+      </div>
+    </form>`;
+
+    $("evalSemester").value=currentEvaluationSemester;
+    $("evalSemester").addEventListener("change",()=>{currentEvaluationSemester=$("evalSemester").value;loadEvaluation()});
+    $("evaluationForm").addEventListener("submit",submitEvaluation);
+  }catch(e){
+    console.error(e);
+    area.innerHTML=`<div class="eval-lock"><strong>Unable to load the evaluation.</strong><div class="eval-note">${esc(e.message||"Please try again later.")}</div></div>`;
+  }finally{showLoader(false)}
+}
+
+async function submitEvaluation(ev){
+  ev.preventDefault();
+  if(!confirm("Submit your instructor evaluation? You will not be able to submit another evaluation for this semester."))return;
+  let form=$("evaluationForm"),ratings={},n=0;
+  for(const section of EVALUATION_SECTIONS){
+    for(const q of section.questions){
+      n++;
+      let selected=form.querySelector(`input[name="eval_${n}"]:checked`);
+      if(!selected){toast("Please answer all rating questions.");return;}
+      ratings[String(n)]=Number(selected.value);
+    }
+  }
+  showLoader(true);
+  try{
+    let payload={
+      student_id:currentUser.id,
+      roster_student_number:currentProfile.student_number,
+      block:currentProfile.section,
+      academic_year:"2026-2027",
+      semester:currentEvaluationSemester,
+      instructor_name:"Celito Joe M. Perillo",
+      ratings,
+      appreciation:$("evalAppreciation").value.trim(),
+      improvement:$("evalImprovement").value.trim(),
+      suggestions:$("evalSuggestions").value.trim()
+    };
+    let {error}=await sb.from("evaluation_submissions").insert(payload);
+    if(error)throw error;
+    toast("Evaluation submitted successfully.");
+    await loadEvaluation();
+    await loadStudentGrades();
+    nav("sGrades");
+  }catch(e){
+    if(String(e.message||"").toLowerCase().includes("duplicate")||e.code==="23505"){
+      toast("You have already submitted this evaluation.");
+      await loadEvaluation();
+    }else toast(e.message||"Evaluation could not be submitted.");
+  }finally{showLoader(false)}
+}
+
+async function loadEvaluationResults(){
+  let area=$("evaluationResults");
+  if(!area)return;
+  showLoader(true);
+  try{
+    let semester=$("adminEvalSemester")?.value||"First Semester";
+    let {data,error}=await sb.rpc("admin_evaluation_summary",{p_academic_year:"2026-2027",p_semester:semester});
+    if(error)throw error;
+    if(!data || !data.length){
+      area.innerHTML=`<div class="eval-card"><strong>No evaluation results yet.</strong><div class="eval-note">Results will appear after students submit evaluations.</div></div>`;
+      return;
+    }
+    let r=data[0];
+    area.innerHTML=`<div class="eval-stats">
+      <div class="eval-stat"><span class="eval-note">RESPONSES</span><b>${Number(r.response_count||0)}</b></div>
+      <div class="eval-stat"><span class="eval-note">OVERALL AVERAGE</span><b>${Number(r.overall_average||0).toFixed(2)} / 5</b></div>
+      <div class="eval-stat"><span class="eval-note">CLASS</span><b style="font-size:15px">${esc(r.block_summary||"All Classes")}</b></div>
+    </div>
+    <div class="eval-card"><div class="eval-section-title">Area Averages</div>${Object.entries(r.area_averages||{}).map(([k,v])=>`<div style="display:flex;justify-content:space-between;border-top:1px solid #eef0f5;padding:11px 0;font-size:12px"><span>${esc(k)}</span><strong>${Number(v).toFixed(2)} / 5</strong></div>`).join("")}</div>
+    <div class="eval-card"><div class="eval-section-title">Anonymous Comments</div>${(r.comments||[]).length?(r.comments||[]).map(c=>`<div class="eval-comment">${esc(c)}</div>`).join(""):'<div class="eval-note">No written comments submitted.</div>'}</div>`;
+  }catch(e){
+    console.error(e);
+    area.innerHTML=`<div class="eval-lock"><strong>Evaluation results are not available yet.</strong><div class="eval-note">${esc(e.message||"Run the supplied Supabase SQL setup first.")}</div></div>`;
+  }finally{showLoader(false)}
+}
+
+async function loadAdminData(){
+  /*
+   * The official names/blocks come from student_roster.
+   * student_profiles only exists after a student creates an account.
+   * Therefore the Admin roster must load the official roster first,
+   * then merge any registered profile information onto it.
+   */
+  showLoader(true);
+  try{
+    const {data:official,error:rosterError}=await sb
+      .from("student_roster")
+      .select("student_number,full_name,block,course,academic_year")
+      .order("student_number");
+
+    if(rosterError) throw rosterError;
+
+    const {data:profiles,error:profileError}=await sb
+      .from("student_profiles")
+      .select("id,student_number,full_name,section,course,academic_year,email,contact_number,birthdate,present_address,home_address,parent1_name,parent1_contact,parent2_name,parent2_contact,account_status")
+      .order("student_number");
+
+    if(profileError) throw profileError;
+
+    const byNumber=new Map((profiles||[]).map(p=>[p.student_number,p]));
+
+    roster=(official||[]).map(r=>{
+      const p=byNumber.get(r.student_number);
+      return {
+        id:p?.id||null,
+        student_number:r.student_number,
+        full_name:r.full_name,
+        section:r.block,
+        block:r.block,
+        course:r.course,
+        academic_year:r.academic_year,
+        email:p?.email||"",
+        contact_number:p?.contact_number||"",
+        birthdate:p?.birthdate||"",
+        present_address:p?.present_address||"",
+        home_address:p?.home_address||"",
+        parent1_name:p?.parent1_name||"",
+        parent1_contact:p?.parent1_contact||"",
+        parent2_name:p?.parent2_name||"",
+        parent2_contact:p?.parent2_contact||"",
+        account_status:p?.account_status||"Not Registered"
+      };
+    });
+
+    $("kTotal").textContent=roster.length;
+    renderStudents();
+    if($("gradeTable")) renderGradeTable();
+  }catch(e){
+    console.error(e);
+    toast("Student roster could not be loaded: "+(e.message||"Database error"));
+  }finally{
+    showLoader(false);
+  }
+}
+function renderStudents(){
+  let q=$("studentSearch").value.trim().toLowerCase(),block=$("studentBlockFilter").value;
+  let rows=roster.filter(x=>(!q||x.student_number.toLowerCase().includes(q)||x.full_name.toLowerCase().includes(q))&&(!block||x.section===block));
+  if(!rows.length){$("studentTable").innerHTML='<div class="empty">No students found.</div>';return}
+  $("studentTable").innerHTML='<table class="table"><thead><tr><th>Student No.</th><th>Name</th><th>Block</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${esc(x.student_number)}</td><td>${esc(x.full_name)}</td><td>${esc(x.section)}</td><td>${esc(x.email||"—")}</td><td>${esc(x.account_status||"Not Registered")}</td><td><button class="btn secondary" style="padding:7px 10px" onclick="viewStudent('${x.id||""}')">VIEW</button></td></tr>`).join("")+'</tbody></table>';
+}
+function viewStudent(id){
+  let x=roster.find(y=>y.id===id);
+  if(!x && id==="") return;
+  if(!x)return;
+  $("modalTitle").textContent=x.full_name;
+  $("modalBody").innerHTML=`<div class="formgrid">
+  <div class="field"><label>STUDENT NUMBER</label><input class="input" value="${esc(x.student_number)}" readonly></div>
+  <div class="field"><label>BLOCK</label><input class="input" value="${esc(x.section)}" readonly></div>
+  <div class="field full"><label>EMAIL</label><input class="input" value="${esc(x.email||"—")}" readonly></div>
+  <div class="field"><label>CONTACT</label><input class="input" value="${esc(x.contact_number||"—")}" readonly></div>
+  <div class="field"><label>BIRTHDATE</label><input class="input" value="${esc(x.birthdate||"—")}" readonly></div>
+  <div class="field full"><label>PRESENT ADDRESS</label><textarea class="textarea" readonly>${esc(x.present_address||"—")}</textarea></div>
+  <div class="field full"><label>HOME ADDRESS</label><textarea class="textarea" readonly>${esc(x.home_address||"—")}</textarea></div>
+  <div class="field"><label>PARENT/GUARDIAN 1</label><input class="input" value="${esc(x.parent1_name||"—")}" readonly></div>
+  <div class="field"><label>CONTACT</label><input class="input" value="${esc(x.parent1_contact||"—")}" readonly></div>
+  <div class="field"><label>PARENT/GUARDIAN 2</label><input class="input" value="${esc(x.parent2_name||"—")}" readonly></div>
+  <div class="field"><label>CONTACT</label><input class="input" value="${esc(x.parent2_contact||"—")}" readonly></div></div>`;
+  $("modal").classList.add("show");
+}
+function closeModal(){$("modal").classList.remove("show")}
+async function completeReset(){
+  let p=$("resetPass").value,p2=$("resetPass2").value;
+  if(p.length<8)return setMsg("resetMsg","Password must contain at least 8 characters.");
+  if(p!==p2)return setMsg("resetMsg","Passwords do not match.");
+  showLoader(true);
+  try{
+    let {error}=await sb.auth.updateUser({password:p});
+    if(error)throw error;
+    setMsg("resetMsg","Password updated successfully. You can now use your Student Number and new password.","ok");
+    setTimeout(async()=>{ $("resetModal").classList.remove("show"); await sb.auth.signOut(); showBox("login"); },1800);
+  }catch(e){setMsg("resetMsg",e.message)}
+  finally{showLoader(false)}
+}
+async function loadAdminGrades(){
+  let subject=$("gradeSubject").value,term=$("gradeTerm").value,block=$("gradeBlock").value;
+  let {data:g,error}=await sb.from("grades").select("id,student_id,grade,published,remarks,subject,term,academic_year").eq("subject",subject).eq("term",term).eq("academic_year","2026-2027");
+  if(error){toast("Grades could not be loaded.");return}
+  let by=new Map((g||[]).map(x=>[x.student_id,x]));
+  adminGrades=roster.filter(s=>!block||s.section===block).map(s=>({student:s,grade:by.get(s.id)||null}));
+  renderGradeTable();
+}
+function renderGradeTable(){
+  if(!adminGrades.length){$("gradeTable").innerHTML='<div class="empty">No students found.</div>';return}
+  $("gradeTable").innerHTML='<table class="table"><thead><tr><th>Student No.</th><th>Name</th><th>Block</th><th>Grade</th><th>Published</th></tr></thead><tbody>'+adminGrades.map((x,i)=>`<tr><td>${esc(x.student.student_number)}</td><td>${esc(x.student.full_name)}</td><td>${esc(x.student.section)}</td><td><input id="grade_${i}" type="number" min="0" max="100" step="0.01" value="${x.grade?.grade??""}" placeholder="—"></td><td><select id="pub_${i}"><option value="false" ${!x.grade?.published?"selected":""}>Draft</option><option value="true" ${x.grade?.published?"selected":""}>Published</option></select></td></tr>`).join("")+'</tbody></table>';
+}
+async function saveAllGrades(){
+  showLoader(true);
+  try{
+    let subject=$("gradeSubject").value,term=$("gradeTerm").value,semester=subject.startsWith("NSTP 1")?"First Semester":"Second Semester",program=subject;
+    for(let i=0;i<adminGrades.length;i++){
+      let x=adminGrades[i],raw=$(("grade_"+i)).value,published=$("pub_"+i).value==="true";
+      let payload={student_id:x.student.id,grade:raw===""?null:Number(raw),published,remarks:"",subject,term,academic_year:"2026-2027",semester,program};
+      if(payload.grade!==null&&(payload.grade<0||payload.grade>100))throw new Error("Grade must be between 0 and 100 for "+x.student.student_number);
+      if(x.grade?.id){
+        let {error}=await sb.from("grades").update(payload).eq("id",x.grade.id);if(error)throw error;
+      }else if(payload.grade!==null){
+        let {error}=await sb.from("grades").insert(payload);if(error)throw error;
+      }
+    }
+    toast("Grades saved successfully.");await loadAdminGrades();
+  }catch(e){toast(e.message)}finally{showLoader(false)}
+}
+async function publishAll(value){
+  showLoader(true);
+  try{
+    let subject=$("gradeSubject").value,term=$("gradeTerm").value,semester=subject.startsWith("NSTP 1")?"First Semester":"Second Semester";
+    for(let x of adminGrades){
+      if(!x.grade?.id)continue;
+      let {error}=await sb.from("grades").update({published:value}).eq("id",x.grade.id);if(error)throw error;
+    }
+    toast(value?"Visible grades published.":"Visible grades unpublished.");await loadAdminGrades();
+  }catch(e){toast(e.message)}finally{showLoader(false)}
+}
+async function logout(){showLoader(true);await sb.auth.signOut();currentUser=null;currentProfile=null;isAdmin=false;$("appView").classList.add("hidden");$("authView").classList.remove("hidden");showBox("login");showLoader(false)}
+async function checkSession(){
+  const hash=location.hash||"";
+  const recovery=hash.includes("type=recovery")||hash.includes("type=invite");
+  if(recovery){
+    setTimeout(()=>$("resetModal").classList.add("show"),500);
+    return;
+  }
+  let {data:{session}}=await sb.auth.getSession();
+  if(!session)return;
+  currentUser=session.user;
+  let {data:role}=await sb.from("user_roles").select("role").eq("user_id",currentUser.id).maybeSingle();
+  if(role?.role==="admin"){isAdmin=true;await startAdmin()}else{await startStudent()}
+}
+sb.auth.onAuthStateChange((event)=>{
+  if(event==="PASSWORD_RECOVERY"){
+    $("resetModal").classList.add("show");
+  }
+})
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+$("regStudent").addEventListener("blur",()=>{if(validSN($("regStudent").value))lookupStudent()});
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+checkSession();
 </script>
 </body>
 </html>
