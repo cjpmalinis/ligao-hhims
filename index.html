@@ -89,6 +89,10 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 .file-name{font-size:11px;color:#6b7280;margin-top:8px}
 
 .att-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:18px;margin-top:18px}.qr-card{background:#fff;border-radius:22px;padding:24px;text-align:center;box-shadow:0 12px 30px #28345c0a}.qr-box{width:250px;height:250px;margin:15px auto;display:grid;place-items:center;background:#fff;border:10px solid #fff;border-radius:18px;box-shadow:0 8px 25px #1112}.qr-id{font:800 14px Poppins;color:#172033}.scanner-card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 12px 30px #28345c0a}.scanner{width:100%;max-width:620px;margin:auto;border-radius:16px;overflow:hidden;background:#111827;min-height:280px}.session-badge{display:inline-flex;padding:7px 10px;border-radius:99px;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:800}.attendance-table{overflow:auto;margin-top:18px}.qr-print{margin-top:10px}.schedule-card{padding:15px;border:1px solid #e8eaf2;border-radius:14px;background:#fafbff}.schedule-card b{display:block;margin-bottom:4px}.scan-result{font-size:18px;font-weight:800;margin-top:12px}.scan-sub{font-size:12px;color:#6b7280;margin-top:4px}@media(max-width:900px){.att-grid{grid-template-columns:1fr}}
+
+.block-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+.block-card{background:#fff;border:1px solid #e8eaf2;border-radius:18px;padding:18px}
+.block-card h3{margin:0 0 6px;font-size:15px}.block-count{font-size:11px;color:#6b7280}
 </style>
 </head>
 <body>
@@ -296,10 +300,37 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
           <div class="welcome"><small>Roster</small><h1>Students</h1><p>Official NSTP student roster and registered account information.</p></div>
           <div class="admin-toolbar">
             <input id="studentSearch" class="input" placeholder="Search student number or name" oninput="renderStudents()">
-            <select id="studentBlockFilter" class="select" onchange="renderStudents()"><option value="">All Blocks</option><option>BSED 1 Social Studies A</option><option>BECED 1-A</option><option>BSED 1 Math</option></select>
+            <select id="studentBlockFilter" class="select" onchange="renderStudents()"><option value="">All Blocks</option></select>
             <button class="btn secondary" onclick="loadAdminData()">REFRESH</button>
           </div>
           <div id="studentTable" class="admin-table-wrap"></div>
+        </div>
+
+
+        <div id="aBlocks" class="page">
+          <div class="welcome"><small>Roster Management</small><h1>Blocks & Students</h1><p>Create a block and add students to the official NSTP roster. Added students can later create their own accounts.</p></div>
+          <div class="grid2">
+            <div class="card">
+              <div class="section-title">➕ Add Block</div>
+              <div class="field"><label>BLOCK / SECTION NAME</label><input id="newBlockName" class="input" placeholder="e.g. BSED 1 English"></div>
+              <div class="field"><label>COURSE / PROGRAM</label><input id="newBlockCourse" class="input" placeholder="e.g. BSED English"></div>
+              <div class="field"><label>CLASS DAY</label><select id="newBlockDay" class="select"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+              <div class="field"><label>ACADEMIC YEAR</label><input id="newBlockYear" class="input" value="2026-2027"></div>
+              <button class="btn primary" style="width:auto" onclick="addBlock()">ADD BLOCK</button><div id="blockMsg" class="msg"></div>
+            </div>
+            <div class="card">
+              <div class="section-title">👤 Add Student</div>
+              <div class="field"><label>STUDENT NUMBER</label><input id="newStudentNo" class="input" placeholder="2026-LTS-098"></div>
+              <div class="field"><label>FULL NAME</label><input id="newStudentName" class="input" placeholder="LAST NAME, FIRST NAME MIDDLE NAME"></div>
+              <div class="field"><label>BLOCK</label><select id="newStudentBlock" class="select"><option value="">Select block</option></select></div>
+              <div class="field"><label>COURSE / PROGRAM</label><input id="newStudentCourse" class="input" placeholder="Course will fill from block"></div>
+              <div class="field"><label>ACADEMIC YEAR</label><input id="newStudentYear" class="input" value="2026-2027"></div>
+              <button class="btn primary" style="width:auto" onclick="addRosterStudent()">ADD STUDENT</button>
+              <button class="btn secondary" style="width:auto;margin-left:6px" onclick="addSampleStudent()">ADD SAMPLE STUDENT</button>
+              <div id="studentAddMsg" class="msg"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px"><div class="section-title">Existing Blocks</div><div id="blockCards" class="block-grid"></div></div>
         </div>
 
         <div id="aGrades" class="page">
@@ -307,7 +338,7 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
           <div class="admin-toolbar">
             <select id="gradeSubject" class="select" onchange="loadAdminGrades()"><option value="NSTP 1: LITERACY TRAINING SERVICE 1">NSTP 1: LITERACY TRAINING SERVICE 1</option><option value="NSTP 2: LITERACY TRAINING SERVICE 2">NSTP 2: LITERACY TRAINING SERVICE 2</option></select>
             <select id="gradeTerm" class="select" onchange="loadAdminGrades()"><option value="Midterm">Midterm</option><option value="Final">Final</option></select>
-            <select id="gradeBlock" class="select" onchange="loadAdminGrades()"><option value="">All Blocks</option><option>BSED 1 Social Studies A</option><option>BECED 1-A</option><option>BSED 1 Math</option></select>
+            <select id="gradeBlock" class="select" onchange="loadAdminGrades()"><option value="">All Blocks</option></select>
             <button class="btn secondary" onclick="loadAdminGrades()">REFRESH</button>
           </div>
           <div class="savebar" style="justify-content:flex-start;margin:0 0 15px"><button class="btn primary" style="width:auto" onclick="saveAllGrades()">SAVE ALL CHANGES</button><button class="btn secondary" onclick="publishAll(true)">PUBLISH VISIBLE</button><button class="btn ghost" onclick="publishAll(false)">UNPUBLISH VISIBLE</button></div>
@@ -414,6 +445,7 @@ function adminSidebar(){
   $("sidebar").innerHTML=`<div class="navtitle">Admin Menu</div>
   <button class="navbtn active" data-page="aDashboard" onclick="nav('aDashboard')">📊 Dashboard</button>
   <button class="navbtn" data-page="aStudents" onclick="nav('aStudents')">👥 Students</button>
+  <button class="navbtn" data-page="aBlocks" onclick="nav('aBlocks');loadAdminBlocks()">🧩 Blocks & Students</button>
   <button class="navbtn" data-page="aGrades" onclick="nav('aGrades')">📝 Grade Management</button>
   <button class="navbtn" data-page="aMaterials" onclick="nav('aMaterials');loadAdminMaterials()">📚 Learning Materials</button>
   <button class="navbtn" data-page="aAttendance" onclick="nav('aAttendance');loadAttendancePage()">📱 Attendance Scanner</button>
@@ -688,6 +720,50 @@ function stopScanner(){if(attendanceScanner){attendanceScanner.stop().then(()=>{
 let lastScanToken="",lastScanAt=0;
 async function onQrScan(decodedText){let now=Date.now();if(decodedText===lastScanToken&&now-lastScanAt<3000)return;lastScanToken=decodedText;lastScanAt=now;try{let {data:qr,error}=await sb.from("student_qr_codes").select("student_id,student_number,full_name,block").eq("token",decodedText).maybeSingle();if(error)throw error;if(!qr){$("scanResult").textContent="❌ QR code not recognized";return}let {error:ins}=await sb.from("attendance_records").insert({session_id:activeAttendanceSession.id,student_id:qr.student_id,attendance_date:new Date().toISOString().slice(0,10),status:"Present",scanned_at:new Date().toISOString(),scanned_by:currentUser.id});if(ins){if(ins.code==="23505"){$("scanResult").textContent="⚠️ Already Recorded";$("scanSub").textContent=qr.full_name;}else throw ins}else{$("scanResult").textContent="✅ PRESENT";$("scanSub").textContent=qr.full_name+" • "+qr.student_number;await loadSessionAttendance()}}catch(e){console.error(e);$("scanResult").textContent="❌ Scan could not be recorded"}}
 async function loadSessionAttendance(){let box=$("attendanceSessionTable");if(!box||!activeAttendanceSession)return;try{let {data,error}=await sb.from("attendance_records").select("student_number,full_name,block,scanned_at,status").eq("session_id",activeAttendanceSession.id).order("scanned_at");if(error)throw error;box.innerHTML=data?.length?'<table class="table"><thead><tr><th>#</th><th>Student No.</th><th>Name</th><th>Block</th><th>Time Scanned</th><th>Status</th></tr></thead><tbody>'+data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.student_number)}</td><td>${esc(x.full_name)}</td><td>${esc(x.block)}</td><td>${new Date(x.scanned_at).toLocaleTimeString()}</td><td><span class="status">${esc(x.status)}</span></td></tr>`).join('')+'</tbody></table>':'<div class="empty">No students scanned yet.</div>'}catch(e){console.error(e)}}
+
+async function loadAdminBlocks(){
+  let cards=$("blockCards"),sel=$("newStudentBlock");if(!cards)return;
+  try{
+    let {data:blocks,error}=await sb.from("nstp_blocks").select("id,name,course,class_day,academic_year").order("name");
+    if(error)throw error;
+    let {data:students,error:se}=await sb.from("student_roster").select("student_number,block");
+    if(se)throw se;
+    let counts={};(students||[]).forEach(x=>counts[x.block]=(counts[x.block]||0)+1);
+    cards.innerHTML=(blocks||[]).map(b=>`<div class="block-card"><h3>${esc(b.name)}</h3><div class="block-count">${esc(b.course)} • ${esc(b.class_day)} • ${esc(b.academic_year)}</div><div style="font-size:24px;font-weight:800;color:#8f1020;margin:10px 0">${counts[b.name]||0} <span style="font-size:11px;color:#6b7280;font-weight:500">students</span></div><button class="btn secondary" style="width:auto" onclick="filterStudentsToBlock('${encodeURIComponent(b.name)}')">VIEW STUDENTS</button></div>`).join("")||'<div class="eval-note">No blocks created yet.</div>';
+    sel.innerHTML='<option value="">Select block</option>'+(blocks||[]).map(b=>`<option value="${esc(b.name)}" data-course="${esc(b.course)}">${esc(b.name)}</option>`).join("");
+    sel.onchange=()=>{let o=sel.options[sel.selectedIndex];$("newStudentCourse").value=o?.dataset.course||""};
+  }catch(e){cards.innerHTML=`<div class="eval-note">${esc(e.message||"Unable to load blocks.")}</div>`}
+}
+async function addBlock(){
+  let name=$("newBlockName").value.trim(),course=$("newBlockCourse").value.trim(),day=$("newBlockDay").value,year=$("newBlockYear").value.trim();
+  if(!name||!course||!year)return setMsg("blockMsg","Complete all block fields.");
+  showLoader(true);try{
+    let {error}=await sb.from("nstp_blocks").insert({name,course,class_day:day,academic_year:year,created_by:currentUser.id});
+    if(error)throw error;$("newBlockName").value="";$("newBlockCourse").value="";setMsg("blockMsg","Block added successfully.","ok");await loadAdminBlocks();await loadAdminData();
+  }catch(e){setMsg("blockMsg",e.message||"Unable to add block.")}finally{showLoader(false)}
+}
+async function addRosterStudent(){
+  let sn=norm($("newStudentNo").value),name=$("newStudentName").value.trim(),block=$("newStudentBlock").value,course=$("newStudentCourse").value.trim(),year=$("newStudentYear").value.trim();
+  if(!/^2026-LTS-[0-9]{3}$/.test(sn))return setMsg("studentAddMsg","Use Student Number format 2026-LTS-001.");
+  if(!name||!block||!course||!year)return setMsg("studentAddMsg","Complete all student fields.");
+  showLoader(true);try{
+    let {data:existing,error:findErr}=await sb.from("student_roster").select("student_number").eq("student_number",sn).maybeSingle();
+    if(findErr)throw findErr;if(existing)throw new Error("That Student Number already exists.");
+    let {error}=await sb.from("student_roster").insert({student_number:sn,full_name:name,block,course,academic_year:year});
+    if(error)throw error;$("newStudentNo").value="";$("newStudentName").value="";setMsg("studentAddMsg","Student added to the official roster. The student can now create an account using this Student Number.","ok");await loadAdminBlocks();await loadAdminData();
+  }catch(e){setMsg("studentAddMsg",e.message||"Unable to add student.")}finally{showLoader(false)}
+}
+async function addSampleStudent(){
+  let {data:blocks}=await sb.from("nstp_blocks").select("name,course,academic_year").order("name").limit(1);
+  let block=blocks?.[0]||{name:"BSED 1 Mathematics",course:"BSED Mathematics",academic_year:"2026-2027"},sn="2026-LTS-TEST";
+  let {data:existing}=await sb.from("student_roster").select("student_number").eq("student_number",sn).maybeSingle();
+  if(existing)return setMsg("studentAddMsg","Sample student already exists.");
+  showLoader(true);try{
+    let {error}=await sb.from("student_roster").insert({student_number:sn,full_name:"TEST STUDENT SAMPLE",block:block.name,course:block.course,academic_year:block.academic_year});
+    if(error)throw error;setMsg("studentAddMsg","Sample student created: 2026-LTS-TEST. You can now test registration.","ok");await loadAdminBlocks();await loadAdminData();
+  }catch(e){setMsg("studentAddMsg",e.message||"Unable to create sample student.")}finally{showLoader(false)}
+}
+function filterStudentsToBlock(encoded){let name=decodeURIComponent(encoded);nav("aStudents");$("studentBlockFilter").value=name;renderStudents();}
 const EVALUATION_SECTIONS = [
   {
     title:"A. Teaching and Lesson Delivery",
@@ -916,6 +992,10 @@ async function loadAdminData(){
       };
     });
 
+    let blockFilter=$("studentBlockFilter"),gradeBlock=$("gradeBlock");
+    let blocks=[...new Set(roster.map(x=>x.section).filter(Boolean))].sort();
+    if(blockFilter){let old=blockFilter.value;blockFilter.innerHTML='<option value="">All Blocks</option>'+blocks.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join("");if(blocks.includes(old))blockFilter.value=old;}
+    if(gradeBlock){let oldg=gradeBlock.value;gradeBlock.innerHTML='<option value="">All Blocks</option>'+blocks.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join("");if(blocks.includes(oldg))gradeBlock.value=oldg;}
     $("kTotal").textContent=roster.length;
     renderStudents();
     if($("gradeTable")) renderGradeTable();
