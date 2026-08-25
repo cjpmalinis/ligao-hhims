@@ -74,6 +74,17 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
 .eval-stat b{display:block;font-size:24px;color:#8f1020;margin-top:4px}
 .eval-comment{padding:12px 14px;border-left:4px solid #d7a21b;background:#fffbeb;border-radius:10px;margin:8px 0;font-size:12px;line-height:1.5}
 @media(max-width:700px){.rating{grid-template-columns:repeat(5,1fr)}.eval-stats{grid-template-columns:1fr}}
+
+.material-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.material-card{background:#fff;border:1px solid #e8eaf2;border-radius:18px;padding:18px;transition:.2s;box-shadow:0 8px 24px #1111}
+.material-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px #1112}
+.material-icon{width:44px;height:44px;border-radius:13px;background:#fdf1f2;display:grid;place-items:center;font-size:21px;margin-bottom:12px}
+.material-title{font:800 14px Poppins;color:#172033}
+.material-meta{font-size:10px;color:#8f1020;font-weight:800;margin:7px 0;text-transform:uppercase}
+.material-desc{font-size:12px;color:#6b7280;line-height:1.5;min-height:38px}
+.material-actions{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.upload-zone{border:2px dashed #d1d5db;border-radius:16px;padding:24px;text-align:center;background:#fafbff}
+.file-name{font-size:11px;color:#6b7280;margin-top:8px}
 </style>
 </head>
 <body>
@@ -225,7 +236,13 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
         </div>
 
 
-        <div id="sEvaluation" class="page">
+        
+        <div id="sMaterials" class="page">
+          <div class="welcome"><small>Learning Resources</small><h1>Learning Materials</h1><p>Access materials uploaded and published by your NSTP instructor.</p></div>
+          <div id="studentMaterials" class="material-grid"></div>
+        </div>
+
+<div id="sEvaluation" class="page">
           <div class="welcome"><small>Confidential Instructor Evaluation</small><h1>Evaluate Your Instructor</h1><p>Your feedback helps improve NSTP teaching and learning.</p></div>
           <div id="evaluationArea" class="eval-grid"></div>
         </div>
@@ -278,7 +295,30 @@ button,input,textarea,select{font:inherit}.hidden{display:none!important}
           <div id="gradeTable" class="admin-table-wrap"></div>
         </div>
 
-        <div id="aEvaluations" class="page">
+        
+        <div id="aMaterials" class="page">
+          <div class="welcome"><small>Instructor Resources</small><h1>Learning Materials</h1><p>Upload, organize, and publish NSTP learning resources for your students.</p></div>
+          <div class="card" style="margin-bottom:18px">
+            <div class="section-title">Upload New Material</div>
+            <div class="grid2">
+              <div class="field"><label>TITLE</label><input id="matTitle" class="input" placeholder="e.g. Module 1: NSTP Orientation"></div>
+              <div class="field"><label>SUBJECT</label><select id="matSubject" class="select"><option>NSTP 1: LITERACY TRAINING SERVICE 1</option><option>NSTP 2: LITERACY TRAINING SERVICE 2</option></select></div>
+              <div class="field"><label>MATERIAL TYPE</label><select id="matType" class="select"><option>Module</option><option>Presentation</option><option>Reviewer</option><option>Activity</option><option>Reading Material</option><option>Other</option></select></div>
+              <div class="field"><label>DESCRIPTION</label><input id="matDescription" class="input" placeholder="Short description"></div>
+            </div>
+            <div class="upload-zone">
+              <div style="font-size:28px">📎</div>
+              <div><strong>Choose learning material</strong></div>
+              <input id="matFile" type="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="margin-top:10px">
+              <div id="matFileName" class="file-name">PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX, JPG/PNG</div>
+            </div>
+            <div style="margin-top:14px"><button class="btn primary" style="width:auto" onclick="uploadLearningMaterial()">UPLOAD & PUBLISH</button></div>
+            <div id="materialMsg" class="msg"></div>
+          </div>
+          <div class="card"><div class="section-title">Published / Uploaded Materials</div><div id="adminMaterials" class="material-grid"></div></div>
+        </div>
+
+<div id="aEvaluations" class="page">
           <div class="welcome"><small>Anonymous Evaluation Summary</small><h1>Instructor Evaluation Results</h1><p>Results are shown in aggregate. Individual student identities are not displayed.</p></div>
           <div class="admin-toolbar"><select id="adminEvalSemester" class="select" onchange="loadEvaluationResults()"><option value="First Semester">First Semester • NSTP 1</option><option value="Second Semester">Second Semester • NSTP 2</option></select><button class="btn secondary" onclick="loadEvaluationResults()">REFRESH</button></div>
           <div id="evaluationResults" class="eval-grid"></div>
@@ -324,6 +364,7 @@ function studentSidebar(){
   <button class="navbtn active" data-page="sDashboard" onclick="nav('sDashboard')">🏠 Dashboard</button>
   <button class="navbtn" data-page="sPersonal" onclick="nav('sPersonal')">👤 Personal Information</button>
   <button class="navbtn" data-page="sGrades" onclick="nav('sGrades');loadStudentGrades()">📚 Grades</button>
+  <button class="navbtn" data-page="sMaterials" onclick="nav('sMaterials');loadStudentMaterials()">📖 Learning Materials</button>
   <button class="navbtn" data-page="sEvaluation" onclick="nav('sEvaluation');loadEvaluation()">📝 Instructor Evaluation</button>
   <button class="navbtn" data-page="sSecurity" onclick="nav('sSecurity')">🔐 Security</button>`;
 }
@@ -332,6 +373,7 @@ function adminSidebar(){
   <button class="navbtn active" data-page="aDashboard" onclick="nav('aDashboard')">📊 Dashboard</button>
   <button class="navbtn" data-page="aStudents" onclick="nav('aStudents')">👥 Students</button>
   <button class="navbtn" data-page="aGrades" onclick="nav('aGrades')">📝 Grade Management</button>
+  <button class="navbtn" data-page="aMaterials" onclick="nav('aMaterials');loadAdminMaterials()">📚 Learning Materials</button>
   <button class="navbtn" data-page="aEvaluations" onclick="nav('aEvaluations');loadEvaluationResults()">📋 Evaluation Results</button>`;
 }
 async function fn(action,payload={}){
@@ -477,6 +519,110 @@ async function changePassword(){
   let p=$("newPass").value,p2=$("newPass2").value;if(p.length<8)return setMsg("secMsg","Password must contain at least 8 characters.");if(p!==p2)return setMsg("secMsg","Passwords do not match.");
   showLoader(true);try{let {error}=await sb.auth.updateUser({password:p});if(error)throw error;setMsg("secMsg","Password changed successfully.","ok");$("newPass").value="";$("newPass2").value=""}catch(e){setMsg("secMsg",e.message)}finally{showLoader(false)}
 }
+
+
+const MATERIAL_BUCKET="nstp-materials";
+
+function materialIcon(type){
+  return type==="Presentation"?"📊":type==="Reviewer"?"📝":type==="Activity"?"✏️":type==="Module"?"📘":type==="Reading Material"?"📄":"📎";
+}
+function safeFileName(name){return name.replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,120);}
+async function uploadLearningMaterial(){
+  let file=$("matFile")?.files?.[0];
+  if(!file)return setMsg("materialMsg","Please choose a file.");
+  let title=$("matTitle").value.trim();
+  if(!title)return setMsg("materialMsg","Please enter a title.");
+  if(file.size>25*1024*1024)return setMsg("materialMsg","File is too large. Maximum is 25 MB.");
+  showLoader(true);
+  try{
+    let uid=currentUser.id;
+    let path=`${uid}/${Date.now()}_${safeFileName(file.name)}`;
+    let up=await sb.storage.from(MATERIAL_BUCKET).upload(path,file,{upsert:false,contentType:file.type||"application/octet-stream"});
+    if(up.error)throw up.error;
+    let {error}=await sb.from("learning_materials").insert({
+      title,
+      description:$("matDescription").value.trim(),
+      subject:$("matSubject").value,
+      material_type:$("matType").value,
+      file_name:file.name,
+      file_path:path,
+      uploaded_by:uid,
+      published:true
+    });
+    if(error){
+      await sb.storage.from(MATERIAL_BUCKET).remove([path]);
+      throw error;
+    }
+    $("matTitle").value="";$("matDescription").value="";$("matFile").value="";$("matFileName").textContent="File uploaded.";
+    setMsg("materialMsg","Learning material uploaded and published successfully.","ok");
+    await loadAdminMaterials();
+  }catch(e){
+    console.error(e);setMsg("materialMsg",e.message||"Upload failed.");
+  }finally{showLoader(false)}
+}
+async function loadAdminMaterials(){
+  let box=$("adminMaterials");if(!box)return;
+  try{
+    let {data,error}=await sb.from("learning_materials").select("id,title,description,subject,material_type,file_name,file_path,published,created_at").order("created_at",{ascending:false});
+    if(error)throw error;
+    if(!data?.length){box.innerHTML='<div class="eval-note">No learning materials uploaded yet.</div>';return;}
+    box.innerHTML=data.map(m=>`<div class="material-card">
+      <div class="material-icon">${materialIcon(m.material_type)}</div>
+      <div class="material-title">${esc(m.title)}</div>
+      <div class="material-meta">${esc(m.material_type)} • ${esc(m.subject)}</div>
+      <div class="material-desc">${esc(m.description||"No description.")}</div>
+      <div class="material-actions">
+        <button class="btn secondary" style="width:auto" onclick="openMaterial('${m.id}')">VIEW / DOWNLOAD</button>
+        <button class="btn ${m.published?"secondary":"primary"}" style="width:auto" onclick="toggleMaterial('${m.id}',${!m.published})">${m.published?"UNPUBLISH":"PUBLISH"}</button>
+        <button class="btn secondary" style="width:auto" onclick="deleteMaterial('${m.id}',${JSON.stringify(m.file_path)})">DELETE</button>
+      </div>
+      <div class="eval-note">${m.published?"Published":"Hidden"} • ${new Date(m.created_at).toLocaleDateString()}</div>
+    </div>`).join("");
+  }catch(e){console.error(e);box.innerHTML=`<div class="eval-note">${esc(e.message||"Could not load materials.")}</div>`}
+}
+async function loadStudentMaterials(){
+  let box=$("studentMaterials");if(!box)return;
+  try{
+    let {data,error}=await sb.from("learning_materials").select("id,title,description,subject,material_type,file_name,file_path,created_at").eq("published",true).order("created_at",{ascending:false});
+    if(error)throw error;
+    if(!data?.length){box.innerHTML='<div class="material-card"><strong>No materials available yet.</strong><div class="eval-note">Your instructor has not published learning materials yet.</div></div>';return;}
+    box.innerHTML=data.map(m=>`<div class="material-card">
+      <div class="material-icon">${materialIcon(m.material_type)}</div>
+      <div class="material-title">${esc(m.title)}</div>
+      <div class="material-meta">${esc(m.material_type)} • ${esc(m.subject)}</div>
+      <div class="material-desc">${esc(m.description||"No description.")}</div>
+      <div class="material-actions"><button class="btn primary" style="width:auto" onclick="openMaterial('${m.id}')">VIEW / DOWNLOAD</button></div>
+      <div class="eval-note">${esc(m.file_name)} • ${new Date(m.created_at).toLocaleDateString()}</div>
+    </div>`).join("");
+  }catch(e){console.error(e);box.innerHTML=`<div class="eval-note">${esc(e.message||"Could not load materials.")}</div>`}
+}
+async function openMaterial(id){
+  try{
+    let {data:m,error}=await sb.from("learning_materials").select("file_path,file_name").eq("id",id).single();
+    if(error)throw error;
+    let {data,error:err}=await sb.storage.from(MATERIAL_BUCKET).createSignedUrl(m.file_path,300);
+    if(err)throw err;
+    window.open(data.signedUrl,"_blank","noopener");
+  }catch(e){toast(e.message||"Unable to open this material.")}
+}
+async function toggleMaterial(id,publish){
+  try{
+    let {error}=await sb.from("learning_materials").update({published:publish,updated_at:new Date().toISOString()}).eq("id",id);
+    if(error)throw error;await loadAdminMaterials();toast(publish?"Material published.":"Material unpublished.");
+  }catch(e){toast(e.message||"Unable to update material.")}
+}
+async function deleteMaterial(id,path){
+  if(!confirm("Delete this learning material permanently?"))return;
+  showLoader(true);
+  try{
+    let {error}=await sb.from("learning_materials").delete().eq("id",id);
+    if(error)throw error;
+    await sb.storage.from(MATERIAL_BUCKET).remove([path]);
+    await loadAdminMaterials();toast("Learning material deleted.");
+  }catch(e){toast(e.message||"Unable to delete material.")}
+  finally{showLoader(false)}
+}
+document.addEventListener("change",e=>{if(e.target.id==="matFile"&&e.target.files[0])$("matFileName").textContent=e.target.files[0].name});
 
 const EVALUATION_SECTIONS = [
   {
